@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import AppButton from "@/components/common/AppButton.vue";
 import AppCard from "@/components/common/AppCard.vue";
+import AppInput from "@/components/common/AppInput.vue";
 import AvatarUpload from "@/components/common/AvatarUpload.vue";
 import { useForm } from "@/composables";
 import type { User } from "@/types";
@@ -74,9 +75,20 @@ const { values, setValue, errors, submit, isSubmitting } = useForm<Profile>(
   }
 );
 
+// Password form
+const passwordData = ref({
+  currentPassword: '',
+  newPassword: '',
+  confirmPassword: ''
+})
+
+const passwordErrors = ref<Record<string, string>>({})
+const isChangingPassword = ref(false)
+
 const isEditing = ref(false);
 const uploadError = ref("");
 const showPasswordModal = ref(false);
+const activeTab = ref("profile");
 
 // Stats
 const userStats = [
@@ -127,6 +139,47 @@ const handlePhotoRemove = () => {
 const handlePhotoError = (message: string) => {
   uploadError.value = message;
 };
+
+const handleDeleteAccount = () => {
+  if (confirm('⚠️ Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
+    console.log('Suppression du compte...')
+  }
+}
+
+const validatePasswordChange = (): boolean => {
+  passwordErrors.value = {}
+  
+  if (!passwordData.value.currentPassword) {
+    passwordErrors.value.currentPassword = 'Mot de passe actuel requis'
+  }
+  
+  if (passwordData.value.newPassword.length < 8) {
+    passwordErrors.value.newPassword = 'Au moins 8 caractères requis'
+  }
+  
+  if (passwordData.value.newPassword !== passwordData.value.confirmPassword) {
+    passwordErrors.value.confirmPassword = 'Les mots de passe ne correspondent pas'
+  }
+  
+  return Object.keys(passwordErrors.value).length === 0
+}
+
+const handlePasswordChange = async () => {
+  if (!validatePasswordChange()) return
+  
+  isChangingPassword.value = true
+  
+  // Simulation API
+  await new Promise(resolve => setTimeout(resolve, 1500))
+  
+  showPasswordModal.value = false
+  passwordData.value = { currentPassword: '', newPassword: '', confirmPassword: '' }
+  passwordErrors.value = {}
+  isChangingPassword.value = false
+  
+  console.log('✅ Mot de passe changé !')
+}
+
 </script>
 
 <template>
@@ -174,7 +227,7 @@ const handlePhotoError = (message: string) => {
       </div>
     </div>
 
-    <div class="grid lg:grid-cols-3 gap-">
+    <div class="grid lg:grid-cols-3 gap-8">
       <div class="lg:cols-span-1">
         <AppCard variant="elevated" padding="lg">
           <div class="mb-6">
@@ -264,18 +317,370 @@ const handlePhotoError = (message: string) => {
 
           <!-- Actions -->
           <div v-if="!isEditing" class="mt-6 space-y-2">
-            <AppButton @click="handleEdit" variant="primary" :full="true">
+            <AppButton @click="handleEdit" variant="primary" :fullwidth="true">
               Modifier le profil
             </AppButton>
             <AppButton
               @click="showPasswordModal = true"
               variant="outline"
-              :full="true"
+              :fullwidth="true"
             >
               Changer le mot de passe
             </AppButton>
           </div>
         </AppCard>
+      </div>
+
+      <!-- Main Content -->
+      <div class="lg:col-span-2">
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-6 border-b border-gray-200">
+          <button
+            @click="activeTab = 'profile'"
+            :class="[
+              'px-4 py-2 text-sm font-medium transition-colors border-b-2',
+              activeTab === 'profile'
+                ? 'border-primary-600 text-primary-600'
+                : 'border-transparent text-gray-600 hover:text-gray-900',
+            ]"
+          >
+            Informations
+          </button>
+          <button
+            @click="activeTab = 'security'"
+            :class="[
+              'px-4 py-2 text-sm font-medium transition-colors border-b-2',
+              activeTab === 'security'
+                ? 'border-primary-600 text-primary-600'
+                : 'border-transparent text-gray-600 hover:text-gray-900',
+            ]"
+          >
+            Sécurité
+          </button>
+          <button
+            @click="activeTab = 'preferences'"
+            :class="[
+              'px-4 py-2 text-sm font-medium transition-colors border-b-2',
+              activeTab === 'preferences'
+                ? 'border-primary-600 text-primary-600'
+                : 'border-transparent text-gray-600 hover:text-gray-900',
+            ]"
+          >
+            Préférences
+          </button>
+        </div>
+
+        <!-- Tab profile -->
+        <AppCard v-if="activeTab === 'profile'" variant="elevated" padding="lg">
+          <h3 class="text-lg font-bold text-gray-900 mb-6">
+            Informations personnelles
+          </h3>
+
+          <form class="space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+              <AppInput
+                :model-value="values.prenom"
+                @update:model-value="setValue('prenom', String($event))"
+                label="Prénom"
+                :disabled="!isEditing"
+                :error="errors.prenom"
+                required
+              />
+              <AppInput
+                :model-value="values.nom"
+                @update:model-value="setValue('nom', String($event))"
+                label="Nom"
+                :disabled="!isEditing"
+                :error="errors.nom"
+                required
+              />
+            </div>
+            <AppInput
+              :model-value="values.email"
+              @update:model-value="setValue('email', String($event))"
+              label="Email"
+              :disabled="!isEditing"
+              :error="errors.email"
+              required
+            />
+
+            <div class="grid md:grid-cols-2 gap-6">
+              <AppInput
+                :model-value="values.telephone"
+                @update:model-value="setValue('telephone', String($event))"
+                label="Téléphone"
+                :disabled="!isEditing"
+                :error="errors.telephone"
+                required
+              />
+              <AppInput
+                :model-value="(values.dateNaissance as string)"
+                @update:model-value="setValue('dateNaissance', String($event))"
+                label="Date de naissance"
+                :disabled="!isEditing"
+                :error="errors.dateNaissance"
+                type="date"
+                required
+              />
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+              <AppInput
+                :model-value="values.classe"
+                @update:model-value="setValue('classe', String($event))"
+                label="Classe"
+                :disabled="!isEditing"
+                :error="errors.classe"
+                required
+              />
+              <AppInput
+                :model-value="(values.etablissement as string)"
+                @update:model-value="setValue('etablissement', String($event))"
+                label="Établissement"
+                :disabled="!isEditing"
+                :error="errors.etablissement"
+                required
+              />
+            </div>
+
+            <div>
+              <label
+                for=""
+                class="block text-sm font-medium text-gray-700 mb-1.5"
+              >
+                Biographie
+                <span
+                  v-if="values.bio"
+                  class="text-xs text-gray-500 font-normal ml-2"
+                >
+                  {{ values.bio?.length || 0 }} / 500
+                </span>
+              </label>
+              <textarea
+                :value="values.bio"
+                @input="(e)=>setValue('bio',(e.target as HTMLTextAreaElement).value)"
+                :disabled="!isEditing"
+                rows="4"
+                maxlength="500"
+                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed resize-none"
+                placeholder="Parlez-nous un peu de vous..."
+              ></textarea>
+              <p class="mt-1.5 text-sm text-red-600" v-if="errors.bio">
+                {{ errors.bio }}
+              </p>
+            </div>
+
+            <div
+              v-if="isEditing"
+              class="flex gap-3 pt-4 border-t border-gray-200"
+            >
+              <AppButton
+                type="submit"
+                variant="primary"
+                :loading="isSubmitting"
+                class="flex-1"
+                :disabled="isSubmitting"
+              >
+                Enregistrer
+              </AppButton>
+
+              <AppButton
+                type="button"
+                variant="outline"
+                class="flex-1"
+                @click="handleCancel"
+                :disabled="isSubmitting"
+              >
+                Annuler
+              </AppButton>
+            </div>
+          </form>
+        </AppCard>
+
+        <!-- Tab: Security -->
+        <AppCard
+          v-if="activeTab === 'security'"
+          variant="elevated"
+          padding="lg"
+        >
+          <h3 class="text-lg font-bold text-gray-900 mb-6">
+            Sécurité du compte
+          </h3>
+
+          <div class="space-y-4">
+            <div
+              class="flex items-start justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              <div class="flex-1">
+                <h4 class="text-sm font-semibold text-gray-900 mb-1">
+                  Mot de passe
+                </h4>
+                <p class="text-sm text-gray-600">
+                  Dernière modification il y a 3 mois
+                </p>
+              </div>
+              <AppButton
+                variant="outline"
+                size="sm"
+                @click="showPasswordModal = true"
+              >
+                Modifier
+              </AppButton>
+            </div>
+
+            <div
+              class="flex items-start justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              <div class="flex-1">
+                <h4 class="text-sm font-semibold text-gray-900 mb-1">
+                  Authentification à deux facteurs
+                </h4>
+                <p class="text-sm text-gray-600">
+                  Ajoutez une couche de sécurité supplémentaire
+                </p>
+              </div>
+              <AppButton variant="outline" size="sm"> Activer </AppButton>
+            </div>
+
+            <div class="pt-6 border-t border-gray-200">
+              <h4 class="text-sm font-semibold text-red-600 mb-2">
+                ⚠️ Zone dangereuse
+              </h4>
+              <p class="text-sm text-gray-600 mb-4">
+                La suppression de votre compte est irréversible.
+              </p>
+              <AppButton variant="danger" size="sm" @click="handleDeleteAccount">
+                Supprimer mon compte
+              </AppButton>
+            </div>
+          </div>
+        </AppCard>
+
+        <!-- Tab: Preferences -->
+        <AppCard
+          v-if="activeTab === 'preferences'"
+          variant="elevated"
+          padding="lg"
+        >
+          <h3 class="text-lg font-bold text-gray-900 mb-6">Préférences</h3>
+
+          <div class="space-y-6">
+            <div class="flex items-center justify-between py-3">
+              <div>
+                <h4 class="text-sm font-semibold text-gray-900">
+                  Notifications par email
+                </h4>
+                <p class="text-sm text-gray-600">
+                  Recevoir les mises à jour par email
+                </p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer" checked />
+                <div
+                  class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"
+                ></div>
+              </label>
+            </div>
+
+            <div
+              class="flex items-center justify-between py-3 border-t border-gray-200"
+            >
+              <div>
+                <h4 class="text-sm font-semibold text-gray-900">Mode sombre</h4>
+                <p class="text-sm text-gray-600">Activer le thème sombre</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer" />
+                <div
+                  class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"
+                ></div>
+              </label>
+            </div>
+
+            <div class="pt-3 border-t border-gray-200">
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Langue</label
+              >
+              <select
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="fr">Français</option>
+                <option value="en">English</option>
+                <option value="es">Español</option>
+              </select>
+            </div>
+          </div>
+        </AppCard>
+      </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div
+      v-if="showPasswordModal"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      @click.self="showPasswordModal = false"
+    >
+      <div
+        class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 animate-modal"
+      >
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-gray-900">
+            Changer le mot de passe
+          </h3>
+          <button
+            @click="showPasswordModal = false"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <form @submit.prevent="handlePasswordChange" class="space-y-4">
+          <AppInput
+            v-model="passwordData.currentPassword"
+            label="Mot de passe actuel"
+            type="password"
+            :error="passwordErrors.currentPassword"
+            required
+          />
+
+          <AppInput
+            v-model="passwordData.newPassword"
+            label="Nouveau mot de passe"
+            type="password"
+            :error="passwordErrors.newPassword"
+            hint="Au moins 8 caractères"
+            required
+          />
+
+          <AppInput
+            v-model="passwordData.confirmPassword"
+            label="Confirmer"
+            type="password"
+            :error="passwordErrors.confirmPassword"
+            required
+          />
+
+          <div class="flex gap-3 pt-4">
+            <AppButton type="submit" variant="primary" :loading="isChangingPassword" full-width>
+              Changer
+            </AppButton>
+            <AppButton type="button" variant="outline" @click="showPasswordModal = false" :disabled="isChangingPassword">
+              Annuler
+            </AppButton>
+          </div>
+        </form>
       </div>
     </div>
   </div>
