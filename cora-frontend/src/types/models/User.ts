@@ -1,0 +1,40 @@
+
+export interface User{
+    id:number;
+    nom:string;
+    prenom:string;
+    full_name:string;
+    email:string;
+    classe:string;
+    telephone:string
+    dateNaissance?:string
+    etablissement?:string
+    bio?:string
+    derniere_connexion?:string
+    photo_profil?:string
+    est_actif?:boolean
+    created_at:string
+    updated_at:string
+}
+
+export interface UserFormData {
+    email:string
+    password:string
+    password_confirmation:string
+    nom:string
+    prenom:string
+}
+
+export interface CreateUserRequest {
+    email:string
+    password:string
+    password_confirmation:string
+    nom:string
+    prenom:string
+}
+export interface UpdateUserRequest {
+    email?:string
+    password?:string
+    nom?:string
+    prenom?:string
+}
