@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-^)c-i6hjk4s$i@-9=9-lua51y01o2rm9z#pa+!!@phwd4000&+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']  # '*' pour le développement uniquement
 
 
 # Application definition
@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'cora_core',
+    'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -158,3 +160,14 @@ REST_FRAMEWORK = {
         'rest_framework.filters.OrderingFilter',
     ],
 }
+
+
+#Pour les domaines qu'on souhaite accepter
+# Configuration CORS pour le développement
+CORS_ALLOW_ALL_ORIGINS = True  # Pour permettre Postman et autres outils de test
+CORS_ALLOW_CREDENTIALS = True
+
+# Pour la production, utilisez plutôt CORS_ALLOW_ORIGINS avec des domaines spécifiques
+# CORS_ALLOW_ORIGINS = [
+#     'http://localhost:3000',
+# ]
