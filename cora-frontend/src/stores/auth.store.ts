@@ -11,7 +11,7 @@ export const useAuthStore = defineStore("auth", () => {
     const user = ref<User | null>(null)
     const token = ref<string | null>(null)
     const isLoading = ref(false)
-    const refreshToken = ref<string | null>(null)
+    const refreshToken = ref<string | null|undefined>(null)
     const error = ref<string | null>(null)
 
     // Computed
@@ -47,22 +47,24 @@ export const useAuthStore = defineStore("auth", () => {
             const response = await authService.register(userData);
             user.value = response.user;
             token.value = response.token;
+            refreshToken.value = response?.refreshToken
 
             //Sauvegarder en localstorage
             // localStorage.setItem("user", (response.user).toString())
             // localStorage.setItem("token", response.token)
 
-            localStorage.setItem('cora_token', response.token)
-            if (response.refreshToken) {
-                localStorage.setItem('cora_refresh_token', response.refreshToken)
-            }
-            localStorage.setItem('cora_user', JSON.stringify(response.user))
+            // localStorage.setItem('cora_token', response.token)
+            // if (response.refreshToken) {
+            //     localStorage.setItem('cora_refresh_token', response.refreshToken)
+            // }
+            // localStorage.setItem('cora_user', JSON.stringify(response.user))
 
             toast.success('Inscription réussie !')
             return response
         } catch (error) {
             console.error("Erreur lors de l'inscription:", error);
             toast.error("Erreur lors de l'inscription")
+            throw error;
         } finally {
             isLoading.value = false
         }
@@ -75,6 +77,7 @@ export const useAuthStore = defineStore("auth", () => {
 
             user.value = response.user;
             token.value = response.token;
+            refreshToken.value= response.refreshToken
 
             //Sauvegarder en localstorage
             // localStorage.setItem("user",  response)
@@ -88,8 +91,8 @@ export const useAuthStore = defineStore("auth", () => {
             return response
         } catch (error) {
             console.error("Erreur lors de la connexion:", error);
-
             toast.error("Identifiants invalides")
+            throw error;
         } finally {
             isLoading.value = false
         }
@@ -102,6 +105,7 @@ export const useAuthStore = defineStore("auth", () => {
             }
         } catch (error) {
             console.error("Erreur lors de la déconnexion:", error);
+            throw error;
         } finally {
             //Nettoyer l'état local
             user.value = null;
@@ -149,10 +153,10 @@ export const useAuthStore = defineStore("auth", () => {
         logout,
         fetchUser
     }
-},{
-    persist:{
-        key:"auth",
-        storage:localStorage,
-        pick:["user","token","refreshToken"]
+}, {
+    persist: {
+        key: "auth",
+        storage: localStorage,
+        pick: ["user", "token", "refreshToken"]
     }
 }) 

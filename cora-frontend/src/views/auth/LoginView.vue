@@ -5,8 +5,11 @@ const router = useRouter()
 const handleLogin = ()=>{
     return router.push({name:'Home'})
 }
+const register = ()=>{
+    return router.push({name:"Register"})
+}
 
 </script>
 <template>
-    <LoginForm @success="handleLogin"/>
+    <LoginForm @success="handleLogin" @register="register"/>
 </template>

@@ -8,7 +8,7 @@ const goToLogin = ()=>{
 router.push({name:"Login"})
 }
 const handleSuccess = ()=>{
-    router.push({name:"Dashboard"})
+    router.push({name:"Home"})
 }
 </script>
 
