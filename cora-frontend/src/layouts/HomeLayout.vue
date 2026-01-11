@@ -2,22 +2,14 @@
 import AppFooter from "@/components/layouts/AppFooter.vue";
 import AppHeader from "@/components/layouts/AppHeader.vue";
 import AppNavBar from "@/components/layouts/AppNavBar.vue";
-import type { User } from "@/types";
+import { useAuthStore } from "@/stores";
 import { onMounted } from "vue";
 
 onMounted(() => {
   console.log("MainLayout mounted");
 });
-const user: User = {
-  id: 1,
-  nom: "Traore",
-  prenom: "Drissa",
-  full_name: "Traore Drissa",
-  email: "drissa@gmail.com",
-  classe:"Tle S",
-  created_at: "07/01/2026",
-  updated_at: "07/01/2026",
-};
+const authStore = useAuthStore()
+const user = authStore.user
 </script>
 <template class="min-h-screen bg-gray-50">
   <!-- Header -->

@@ -2,13 +2,13 @@
 // AUTHENTIFICATION
 //===========================================
 export interface RegisterRequest {
-    email: string
+    telephone: string
     password: string
     password_confirmation: string
     nom: string
     prenom: string
 }
 export interface LoginRequest {
-    email: string
+    telephone: string
     password: string
 }

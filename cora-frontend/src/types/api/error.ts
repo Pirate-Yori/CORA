@@ -31,9 +31,33 @@ export class ApiException extends Error {
     }
 }
 
+export class UnauthorizedError extends ApiException{
+    constructor(message:string ="Non Authentifié"){
+        super(message,401);
+        this.name="UnauthorizedError"
+    }
+}
+export class ForbiddenError extends ApiException{
+    constructor(message: string = "Accès refusé") {
+        super(message, 403);
+        this.name = "ForbiddenError";
+    }
+}
+export class NotFoundError extends ApiException{
+    constructor(message: string = "Ressource non trouvée") {
+        super(message, 404);
+        this.name = "NotFoundError";
+    }
+}
 export class ValidationException extends ApiException {
     constructor(message: string = "Données invalides", errors?: Record<string, string[]>) {
         super(message, 422, errors);
         this.name = "ValidationException";
+    }
+}
+export class ServerError extends ApiException{
+    constructor(message: string = "Erreur serveur") {
+        super(message, 500);
+        this.name = "ServerError";
     }
 }

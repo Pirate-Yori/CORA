@@ -1,4 +1,4 @@
-import type { RegisterRequest, LoginRequest, AuthResponse, LogoutResponse, MeResponse } from "@types";
+import type { RegisterRequest, LoginRequest, AuthResponse, LogoutResponse, MeResponse } from "@/types";
 import apiClient from "./axios.config";
 
 /**
@@ -9,7 +9,7 @@ class AuthService {
      * Inscription
      */
     async register(userData: RegisterRequest): Promise<AuthResponse> {
-        const { data } = await apiClient.post<AuthResponse>('auth/register', userData)
+        const { data } = await apiClient.post<AuthResponse>('auth/register/', userData)
         return data
     }
 
@@ -17,7 +17,7 @@ class AuthService {
      * Connexion
      */
     async login(credentials: LoginRequest): Promise<AuthResponse> {
-        const { data } = await apiClient.post<AuthResponse>('auth/login', credentials)
+        const { data } = await apiClient.post<AuthResponse>('auth/login/', credentials)
         return data
     }
 
@@ -25,7 +25,7 @@ class AuthService {
     * Déconnexion
    */
     async logout(): Promise<LogoutResponse> {
-        const { data } = await apiClient.post<LogoutResponse>('/auth/logout')
+        const { data } = await apiClient.post<LogoutResponse>('/auth/logout/')
         return data
     }
 
@@ -33,7 +33,12 @@ class AuthService {
      * Récuperer l'utilisateur connecté
      */
     async me(): Promise<MeResponse> {
-        const { data } = await apiClient.get<MeResponse>('/auth/me')
+        const { data } = await apiClient.get<MeResponse>('/auth/me/')
+        return data
+    }
+
+    async myProfile(): Promise<MeResponse> {
+        const { data } = await apiClient.get<MeResponse>('/auth/profile')
         return data
     }
 }

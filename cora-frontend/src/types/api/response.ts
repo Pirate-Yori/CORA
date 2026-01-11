@@ -20,8 +20,9 @@ export interface ApiResponse<T> {
 //===========================================
 export interface AuthResponse {
     message:string
-    user:string|User
+    user:User
     token:string
+    refreshToken?:string
 }
 export interface LoginResponse extends AuthResponse {}
 export interface RegisterRespone extends AuthResponse {}

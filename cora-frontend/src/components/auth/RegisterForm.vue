@@ -16,7 +16,7 @@ const authStore = useAuthStore();
 interface RegisterFormData {
   nom: string;
   prenom: string;
-  email: string;
+  telephone: string;
   password: string;
   password_confirmation: string;
 }
@@ -26,7 +26,7 @@ const { values, errors, setValue, setErrors, submit, isSubmitting } =
     {
       nom: "",
       prenom: "",
-      email: "",
+      telephone: "",
       password: "",
       password_confirmation: "",
     },
@@ -39,9 +39,8 @@ const { values, errors, setValue, setErrors, submit, isSubmitting } =
         { required: true, message: "Le nom est obligatoire" },
         { min: 2, message: "Le nom doit contenir au moins 2 caractères" },
       ],
-      email: [
-        { required: true, message: "L'email est obligatoire" },
-        { email: true, message: "Email invalide" },
+      telephone: [
+        { required: true, message: "Le telephone est obligatoire" },
       ],
       password: [
         { required: true, message: "Le mot de passe est obligatoire" },
@@ -81,7 +80,7 @@ const handleRegister = async () => {
   await submit(async (formvalues) => {
     try {
       const registerData: RegisterRequest = {
-        email: formvalues.email,
+        telephone: formvalues.telephone,
         nom: formvalues.nom,
         prenom: formvalues.prenom,
         password: formvalues.password,
@@ -184,13 +183,13 @@ const generalError = ref<string | null>(null);
           <!-- Email -->
 
           <AppInput
-            :model-value="values.email"
-            @update:model-value="setValue('email', String($event))"
+            :model-value="values.telephone"
+            @update:model-value="setValue('telephone', String($event))"
             label="Email Address"
-            type="email"
-            placeholder="Enter your Email Address"
-            autocomplete="email"
-            :error="errors.email"
+            type="number"
+            placeholder="Entrer votre numero de telephone"
+            autocomplete="telephone"
+            :error="errors.telephone"
             class="bg-white text-black placeholder:text-neutral-400 font-light font-['Poppins'] rounded-full"
           />
           <!-- User name -->

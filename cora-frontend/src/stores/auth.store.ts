@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
-import type { User, LoginRequest,RegisterRequest } from "@/types";
+import type { User, LoginRequest, RegisterRequest } from "@/types";
 import { computed, ref } from "vue";
-import {authService} from "@/services";
+import { authService } from "@/services";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
@@ -11,21 +11,52 @@ export const useAuthStore = defineStore("auth", () => {
     const user = ref<User | null>(null)
     const token = ref<string | null>(null)
     const isLoading = ref(false)
+    const refreshToken = ref<string | null>(null)
+    const error = ref<string | null>(null)
 
-    // Gettres
+    // Computed
     const isAuthenticated = computed(() => !!token.value && !!user.value)
+    const isStudent = computed(() => user.value?.role === 'student')
+    const isTeacher = computed(() => user.value?.role === 'teacher')
+    const isAdmin = computed(() => user.value?.role === 'admin')
+    const fullName = computed(() =>
+        user.value ? `${user.value.prenom} ${user.value.nom}` : ''
+    )
 
     //Actions
+
+    /**
+   * Initialize auth from stored data
+   */
+    const initialize = () => {
+        const storedToken = localStorage.getItem('cora_token')
+        const storedRefreshToken = localStorage.getItem('cora_refresh_token')
+        const storedUser = localStorage.getItem('cora_user')
+
+        if (storedToken && storedUser) {
+            token.value = storedToken
+            refreshToken.value = storedRefreshToken
+            user.value = JSON.parse(storedUser)
+        }
+    }
+
     const register = async (userData: RegisterRequest) => {
+        isLoading.value = true
+        error.value = null
         try {
-            isLoading.value = true
             const response = await authService.register(userData);
             user.value = response.user;
             token.value = response.token;
 
             //Sauvegarder en localstorage
-            localStorage.setItem("user", response.user)
-            localStorage.setItem("token", response.token)
+            // localStorage.setItem("user", (response.user).toString())
+            // localStorage.setItem("token", response.token)
+
+            localStorage.setItem('cora_token', response.token)
+            if (response.refreshToken) {
+                localStorage.setItem('cora_refresh_token', response.refreshToken)
+            }
+            localStorage.setItem('cora_user', JSON.stringify(response.user))
 
             toast.success('Inscription réussie !')
             return response
@@ -41,15 +72,19 @@ export const useAuthStore = defineStore("auth", () => {
         try {
             isLoading.value = true
             const response = await authService.login(credentials);
-            
+
             user.value = response.user;
             token.value = response.token;
 
             //Sauvegarder en localstorage
-            localStorage.setItem("user", response.user)
-            localStorage.setItem("token", response.token)
-
-            toast.success(`Bienvenue ${response.user.full_name}`)
+            // localStorage.setItem("user",  response)
+            // localStorage.setItem("token", response.token)
+            localStorage.setItem('cora_token', response.token)
+            if (response.refreshToken) {
+                localStorage.setItem('cora_refresh_token', response.refreshToken)
+            }
+            localStorage.setItem('cora_user', JSON.stringify(response.user))
+            toast.success(`Bienvenue ${response.user.nom}`)
             return response
         } catch (error) {
             console.error("Erreur lors de la connexion:", error);
@@ -77,16 +112,47 @@ export const useAuthStore = defineStore("auth", () => {
             toast.info("Vous avez été déconnecté.");
         }
     }
+
+    /**
+   * Fetch current user data
+   */
+    const fetchUser = async (): Promise<User> => {
+        isLoading.value = true
+        error.value = null
+
+        try {
+            const response = await authService.me()
+            user.value = response.user
+            localStorage.setItem('cora_user', JSON.stringify(response.user))
+            return response.user
+        } catch (err: any) {
+            error.value = err.response?.data?.message || 'Échec de la récupération'
+            throw err
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     return {
         //State
         user,
         token,
+        refreshToken,
         isLoading,
 
         //Getters
         isAuthenticated,
 
         //Actions
-        login, register, logout
+        login,
+        register,
+        logout,
+        fetchUser
+    }
+},{
+    persist:{
+        key:"auth",
+        storage:localStorage,
+        pick:["user","token","refreshToken"]
     }
 }) 

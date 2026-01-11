@@ -4,13 +4,14 @@ import AppCard from "@/components/common/AppCard.vue";
 import AppInput from "@/components/common/AppInput.vue";
 import AvatarUpload from "@/components/common/AvatarUpload.vue";
 import { useForm } from "@/composables";
+import { useAuthStore } from "@/stores";
 import type { User } from "@/types";
-import { ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
+const authStore = useAuthStore();
 interface Profile {
   nom: string;
   prenom: string;
-  full_name: string;
   email: string;
   classe: string;
   telephone: string;
@@ -21,28 +22,11 @@ interface Profile {
   photo_profil?: string;
   est_actif?: boolean;
 }
-// État initial de l'utilisateur
-const user = ref<User>({
-  id: 1,
-  nom: "Dupont",
-  prenom: "Marie",
-  full_name: "Dupont Marie",
-  email: "marie.dupont@ecole.fr",
-  telephone: "06 12 34 56 78",
-  dateNaissance: "2006-03-15",
-  classe: "Terminale S",
-  etablissement: "Lycée Victor Hugo",
-  bio: "Passionnée de mathématiques et de sciences. Mon objectif est de devenir ingénieure en intelligence artificielle.",
-  photo_profil: undefined,
-  created_at: "01/12/2027",
-  updated_at: "01/12/2027",
-});
 
 const { values, setValue, errors, submit, isSubmitting } = useForm<Profile>(
   {
-    prenom: "",
     nom: "",
-    full_name: "",
+    prenom: "",
     email: "",
     classe: "",
     telephone: "",
@@ -77,13 +61,13 @@ const { values, setValue, errors, submit, isSubmitting } = useForm<Profile>(
 
 // Password form
 const passwordData = ref({
-  currentPassword: '',
-  newPassword: '',
-  confirmPassword: ''
-})
+  currentPassword: "",
+  newPassword: "",
+  confirmPassword: "",
+});
 
-const passwordErrors = ref<Record<string, string>>({})
-const isChangingPassword = ref(false)
+const passwordErrors = ref<Record<string, string>>({});
+const isChangingPassword = ref(false);
 
 const isEditing = ref(false);
 const uploadError = ref("");
@@ -141,45 +125,88 @@ const handlePhotoError = (message: string) => {
 };
 
 const handleDeleteAccount = () => {
-  if (confirm('⚠️ Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
-    console.log('Suppression du compte...')
+  if (
+    confirm(
+      "⚠️ Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible."
+    )
+  ) {
+    console.log("Suppression du compte...");
   }
-}
+};
 
 const validatePasswordChange = (): boolean => {
-  passwordErrors.value = {}
-  
+  passwordErrors.value = {};
+
   if (!passwordData.value.currentPassword) {
-    passwordErrors.value.currentPassword = 'Mot de passe actuel requis'
+    passwordErrors.value.currentPassword = "Mot de passe actuel requis";
   }
-  
+
   if (passwordData.value.newPassword.length < 8) {
-    passwordErrors.value.newPassword = 'Au moins 8 caractères requis'
+    passwordErrors.value.newPassword = "Au moins 8 caractères requis";
   }
-  
+
   if (passwordData.value.newPassword !== passwordData.value.confirmPassword) {
-    passwordErrors.value.confirmPassword = 'Les mots de passe ne correspondent pas'
+    passwordErrors.value.confirmPassword =
+      "Les mots de passe ne correspondent pas";
   }
-  
-  return Object.keys(passwordErrors.value).length === 0
-}
+
+  return Object.keys(passwordErrors.value).length === 0;
+};
 
 const handlePasswordChange = async () => {
-  if (!validatePasswordChange()) return
-  
-  isChangingPassword.value = true
-  
+  if (!validatePasswordChange()) return;
+
+  isChangingPassword.value = true;
+
   // Simulation API
-  await new Promise(resolve => setTimeout(resolve, 1500))
-  
-  showPasswordModal.value = false
-  passwordData.value = { currentPassword: '', newPassword: '', confirmPassword: '' }
-  passwordErrors.value = {}
-  isChangingPassword.value = false
-  
-  console.log('✅ Mot de passe changé !')
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+
+  showPasswordModal.value = false;
+  passwordData.value = {
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  };
+  passwordErrors.value = {};
+  isChangingPassword.value = false;
+
+  console.log("✅ Mot de passe changé !");
+};
+
+const currentUser = computed(()=>authStore.user)
+
+const loadUserData = ()=>{
+  const user = currentUser.value
+
+  if(!user){
+    console.warn("Aucun utilisateur connecté");
+    return;
+  }
+
+  //Mapper les donnée
+  (Object.keys(values) as Array<keyof Profile>).forEach((key) => {
+    const value = user[key as keyof typeof user];
+    if (value !== undefined) {
+      setValue(key, value as any);
+    }
+  });
 }
 
+watch(currentUser, (newUser) => {
+  if (newUser) {
+    loadUserData();
+  }
+}, { immediate: true });
+
+onMounted(async () => {
+  if (!authStore.user) {
+    try {
+      await authStore.fetchUser();
+    } catch (error) {
+      console.error("❌ Erreur lors du chargement du profil:", error);
+    }
+  }
+});
 </script>
 
 <template>
@@ -228,8 +255,10 @@ const handlePasswordChange = async () => {
     </div>
 
     <div class="grid lg:grid-cols-3 gap-8">
-      <div class="lg:cols-span-1">
+      <!-- SideBar -->
+      <div class="lg:col-span-1">
         <AppCard variant="elevated" padding="lg">
+          <!-- Avatr Upload -->
           <div class="mb-6">
             <AvatarUpload
               :current-photo="values.photo_profil"
@@ -548,7 +577,11 @@ const handlePasswordChange = async () => {
               <p class="text-sm text-gray-600 mb-4">
                 La suppression de votre compte est irréversible.
               </p>
-              <AppButton variant="danger" size="sm" @click="handleDeleteAccount">
+              <AppButton
+                variant="danger"
+                size="sm"
+                @click="handleDeleteAccount"
+              >
                 Supprimer mon compte
               </AppButton>
             </div>
@@ -673,10 +706,20 @@ const handlePasswordChange = async () => {
           />
 
           <div class="flex gap-3 pt-4">
-            <AppButton type="submit" variant="primary" :loading="isChangingPassword" full-width>
+            <AppButton
+              type="submit"
+              variant="primary"
+              :loading="isChangingPassword"
+              full-width
+            >
               Changer
             </AppButton>
-            <AppButton type="button" variant="outline" @click="showPasswordModal = false" :disabled="isChangingPassword">
+            <AppButton
+              type="button"
+              variant="outline"
+              @click="showPasswordModal = false"
+              :disabled="isChangingPassword"
+            >
               Annuler
             </AppButton>
           </div>

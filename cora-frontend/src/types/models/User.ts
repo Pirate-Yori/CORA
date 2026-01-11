@@ -9,6 +9,7 @@ export interface User{
     telephone:string
     dateNaissance?:string
     etablissement?:string
+    role: 'student' | 'teacher' | 'admin'
     bio?:string
     derniere_connexion?:string
     photo_profil?:string

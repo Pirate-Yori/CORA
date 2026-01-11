@@ -14,16 +14,12 @@ const authStore = useAuthStore();
 const { values, setErrors, submit, setValue, isSubmitting,errors } =
   useForm<LoginRequest>(
     {
-      email: "",
+      telephone: "",
       password: "",
     },
     {
-      email: [
-        { required: true, message: "L'email est obligatoire" },
-        {
-          email: true,
-          message: "Email invalide",
-        },
+      telephone: [
+        { required: true, message: "Le telephone est obligatoire" },
       ],
       password: [
         { required: true, message: "Le mot de passe est obligatoire" },
@@ -107,13 +103,12 @@ const handleLogin = async () => {
           <!-- Email -->
 
           <AppInput
-            :model-value="values.email"
-            @update:model-value="setValue('email', String($event))"
+            :model-value="values.telephone"
+            @update:model-value="setValue('telephone', String($event))"
             label="Email Address"
-            type="email"
-            placeholder="Enter your Email Address"
-            autocomplete="email"
-            :error="errors.email"
+            placeholder="Entrer votre numero de telephone"
+            autocomplete="telephone"
+            :error="errors.telephone"
           />
           <!-- password Field -->
           <AppInput
