@@ -10,11 +10,14 @@ onMounted(() => {
 });
 const authStore = useAuthStore()
 const user = authStore.user
+const logout= async () =>{
+await authStore.logout()
+}
 </script>
 <template class="min-h-screen bg-gray-50">
   <!-- Header -->
   <!-- <AppHeader /> -->
-  <AppNavBar :user="user"/>
+  <AppNavBar :user="user" @logout="logout"/>
   <main class="flex transition-all duration-300">
     <div class="p-6">
       <div class="animate-fade-in min-h-screen">

@@ -23,7 +23,7 @@ const { values, setErrors, submit, setValue, isSubmitting, errors } =
       password: [
         { required: true, message: "Le mot de passe est obligatoire" },
         {
-          min: 6,
+          min: 2,
           message: "Le mot de passe doit contenir au moins 6 caractères",
         },
       ],

@@ -5,25 +5,12 @@ import AppInput from "@/components/common/AppInput.vue";
 import AvatarUpload from "@/components/common/AvatarUpload.vue";
 import { useForm } from "@/composables";
 import { useAuthStore } from "@/stores";
-import type { User } from "@/types";
+import type { ChangePasswordRequest, UpdateUserRequest } from "@/types";
 import { computed, onMounted, ref, watch } from "vue";
 
 const authStore = useAuthStore();
-interface Profile {
-  nom: string;
-  prenom: string;
-  email: string;
-  classe: string;
-  telephone: string;
-  dateNaissance?: string;
-  etablissement?: string;
-  bio?: string;
-  derniere_connexion?: string;
-  photo_profil?: string;
-  est_actif?: boolean;
-}
 
-const { values, setValue, errors, submit, isSubmitting } = useForm<Profile>(
+const { values, setValue, errors, submit, isSubmitting } = useForm<UpdateUserRequest>(
   {
     nom: "",
     prenom: "",
@@ -31,9 +18,7 @@ const { values, setValue, errors, submit, isSubmitting } = useForm<Profile>(
     classe: "",
     telephone: "",
     dateNaissance: "",
-    etablissement: "",
     bio: "",
-    derniere_connexion: "",
     photo_profil: "",
     est_actif: true,
   },
@@ -60,9 +45,9 @@ const { values, setValue, errors, submit, isSubmitting } = useForm<Profile>(
 );
 
 // Password form
-const passwordData = ref({
-  currentPassword: "",
-  newPassword: "",
+const passwordData = ref<ChangePasswordRequest>({
+  old_password: "",
+  new_password: "",
   confirmPassword: "",
 });
 
@@ -106,13 +91,34 @@ const handleEdit = () => {
   isEditing.value = true;
 };
 
+const handleUpdateUser = async ()=>{
+  await submit(async (formvalues)=>{
+    try{
+      console.log("profile",formvalues);
+      await authStore.updateUserData(formvalues)
+      
+    }catch(error){
+      console.error("erreur lors de l'update",error)
+    }
+
+  })
+}
+
 const handleCancel = () => {
   isEditing.value = false;
 };
-const handlePhotoUpdate = (file: File, preview: string) => {
+const handlePhotoUpdate = async (file: File, preview: string) => {
   uploadError.value = "";
   setValue("photo_profil", preview);
   console.log("Photo updated:", file.name);
+  try{
+    //Upload
+    const photoUrl = await authStore.uploadPhoto(file)
+    //Remplacer par url du server
+    setValue('photo_profil',photoUrl)
+  }catch(error:any){
+    uploadError.value = error.message
+  }
 };
 
 const handlePhotoRemove = () => {
@@ -137,15 +143,15 @@ const handleDeleteAccount = () => {
 const validatePasswordChange = (): boolean => {
   passwordErrors.value = {};
 
-  if (!passwordData.value.currentPassword) {
-    passwordErrors.value.currentPassword = "Mot de passe actuel requis";
+  if (!passwordData.value.old_password) {
+    passwordErrors.value.old_password = "Mot de passe actuel requis";
   }
 
-  if (passwordData.value.newPassword.length < 8) {
-    passwordErrors.value.newPassword = "Au moins 8 caractères requis";
+  if (passwordData.value.new_password.length < 8) {
+    passwordErrors.value.new_password = "Au moins 8 caractères requis";
   }
 
-  if (passwordData.value.newPassword !== passwordData.value.confirmPassword) {
+  if (passwordData.value.new_password !== passwordData.value.confirmPassword) {
     passwordErrors.value.confirmPassword =
       "Les mots de passe ne correspondent pas";
   }
@@ -159,12 +165,12 @@ const handlePasswordChange = async () => {
   isChangingPassword.value = true;
 
   // Simulation API
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-
+  await authStore.changePassword(passwordData.value)
+  // console.log("data",passwordData.value)
   showPasswordModal.value = false;
   passwordData.value = {
-    currentPassword: "",
-    newPassword: "",
+    old_password: "",
+    new_password: "",
     confirmPassword: "",
   };
   passwordErrors.value = {};
@@ -184,7 +190,7 @@ const loadUserData = ()=>{
   }
 
   //Mapper les donnée
-  (Object.keys(values) as Array<keyof Profile>).forEach((key) => {
+  (Object.keys(values) as Array<keyof UpdateUserRequest>).forEach((key) => {
     const value = user[key as keyof typeof user];
     if (value !== undefined) {
       setValue(key, value as any);
@@ -320,7 +326,7 @@ onMounted(async () => {
               </svg>
               <span class="text-gray-600">{{ values.telephone }}</span>
             </div>
-
+<!-- 
             <div
               v-if="values.etablissement"
               class="flex items-center gap-3 text-sm"
@@ -341,7 +347,7 @@ onMounted(async () => {
               <span class="text-gray-600 truncate">{{
                 values.etablissement
               }}</span>
-            </div>
+            </div> -->
           </div>
 
           <!-- Actions -->
@@ -405,10 +411,10 @@ onMounted(async () => {
             Informations personnelles
           </h3>
 
-          <form class="space-y-6">
+          <form @submit.prevent="handleUpdateUser" class="space-y-6">
             <div class="grid md:grid-cols-2 gap-6">
               <AppInput
-                :model-value="values.prenom"
+                :model-value="String(values.prenom)"
                 @update:model-value="setValue('prenom', String($event))"
                 label="Prénom"
                 :disabled="!isEditing"
@@ -416,7 +422,7 @@ onMounted(async () => {
                 required
               />
               <AppInput
-                :model-value="values.nom"
+                :model-value="String(values.nom)"
                 @update:model-value="setValue('nom', String($event))"
                 label="Nom"
                 :disabled="!isEditing"
@@ -425,7 +431,7 @@ onMounted(async () => {
               />
             </div>
             <AppInput
-              :model-value="values.email"
+              :model-value="String(values.email)"
               @update:model-value="setValue('email', String($event))"
               label="Email"
               :disabled="!isEditing"
@@ -435,7 +441,7 @@ onMounted(async () => {
 
             <div class="grid md:grid-cols-2 gap-6">
               <AppInput
-                :model-value="values.telephone"
+                :model-value="String(values.telephone)"
                 @update:model-value="setValue('telephone', String($event))"
                 label="Téléphone"
                 :disabled="!isEditing"
@@ -454,19 +460,11 @@ onMounted(async () => {
             </div>
             <div class="grid md:grid-cols-2 gap-6">
               <AppInput
-                :model-value="values.classe"
+                :model-value="String(values.classe)"
                 @update:model-value="setValue('classe', String($event))"
                 label="Classe"
                 :disabled="!isEditing"
                 :error="errors.classe"
-                required
-              />
-              <AppInput
-                :model-value="(values.etablissement as string)"
-                @update:model-value="setValue('etablissement', String($event))"
-                label="Établissement"
-                :disabled="!isEditing"
-                :error="errors.etablissement"
                 required
               />
             </div>
@@ -681,18 +679,18 @@ onMounted(async () => {
 
         <form @submit.prevent="handlePasswordChange" class="space-y-4">
           <AppInput
-            v-model="passwordData.currentPassword"
+            v-model="passwordData.old_password"
             label="Mot de passe actuel"
             type="password"
-            :error="passwordErrors.currentPassword"
+            :error="passwordErrors.old_password"
             required
           />
 
           <AppInput
-            v-model="passwordData.newPassword"
+            v-model="passwordData.new_password"
             label="Nouveau mot de passe"
             type="password"
-            :error="passwordErrors.newPassword"
+            :error="passwordErrors.new_password"
             hint="Au moins 8 caractères"
             required
           />

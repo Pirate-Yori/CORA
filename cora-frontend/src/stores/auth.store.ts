@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { User, LoginRequest, RegisterRequest } from "@/types";
+import type { User, LoginRequest, RegisterRequest, UpdateUserRequest, ChangePasswordRequest } from "@/types";
 import { computed, ref } from "vue";
 import { authService } from "@/services";
 import { useToast } from "vue-toastification";
@@ -24,21 +24,6 @@ export const useAuthStore = defineStore("auth", () => {
     )
 
     //Actions
-
-    /**
-   * Initialize auth from stored data
-   */
-    const initialize = () => {
-        const storedToken = localStorage.getItem('cora_token')
-        const storedRefreshToken = localStorage.getItem('cora_refresh_token')
-        const storedUser = localStorage.getItem('cora_user')
-
-        if (storedToken && storedUser) {
-            token.value = storedToken
-            refreshToken.value = storedRefreshToken
-            user.value = JSON.parse(storedUser)
-        }
-    }
 
     const register = async (userData: RegisterRequest) => {
         isLoading.value = true
@@ -137,6 +122,64 @@ export const useAuthStore = defineStore("auth", () => {
         }
     }
 
+    const uploadPhoto = async (file:File):Promise<string>=>{
+        isLoading.value = true
+        error.value = null
+
+        try{
+            const formData =new FormData()
+            formData.append('photo',file)
+            // formData.append('userId',user.value?.id || '')
+
+            const response = await authService.uploadPhoto(formData)
+
+            if(user.value){
+                user.value.photo_profil = response.photo_profil
+            }
+            console.log('photo',response)
+
+            return response.photo_profil
+        }catch(err:any){
+            err.value = err.response?.data?.message
+            throw err
+        }finally{
+            isLoading.value=false
+        }
+    }
+
+    const updateUserData = async(updateData: UpdateUserRequest)=>{
+        isLoading.value = true
+        try{
+            const response = await authService.updateUser(updateData)
+            user.value = response.user
+
+            toast.success('Profil mis à jour avec success !')
+            return response
+        }catch (error) {
+            console.error("Erreur lors de la connexion:", error);
+            toast.error("Oups une erreur s'est produite")
+            throw error;
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    const changePassword = async(newPasswordData:ChangePasswordRequest)=>{
+        isLoading.value = true
+        try{
+            const response = await authService.ChangePassword(newPasswordData)
+            toast.success('Mot de passe changé avec success !')
+            return response
+        }catch (error) {
+            console.error("Erreur lors du changement", error);
+            toast.error("Oups une erreur s'est produite")
+            throw error;
+        } finally {
+            isLoading.value = false
+        }
+
+    }
+
     return {
         //State
         user,
@@ -151,7 +194,10 @@ export const useAuthStore = defineStore("auth", () => {
         login,
         register,
         logout,
-        fetchUser
+        fetchUser,
+        uploadPhoto,
+        updateUserData,
+        changePassword
     }
 }, {
     persist: {

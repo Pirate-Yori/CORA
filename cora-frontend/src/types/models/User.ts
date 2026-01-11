@@ -35,7 +35,18 @@ export interface CreateUserRequest {
 }
 export interface UpdateUserRequest {
     email?:string
-    password?:string
     nom?:string
     prenom?:string
+    telephone?:string
+    classe?:string
+    bio?:string
+    est_actif?:boolean
+    dateNaissance?:string
+    photo_profil?:string
+}
+
+export interface ChangePasswordRequest {
+    old_password:string
+    new_password:string
+    confirmPassword:string
 }
