@@ -163,6 +163,7 @@ const handlePasswordChange = async () => {
   if (!validatePasswordChange()) return;
 
   isChangingPassword.value = true;
+try{
 
   // Simulation API
   await authStore.changePassword(passwordData.value)
@@ -177,6 +178,9 @@ const handlePasswordChange = async () => {
   isChangingPassword.value = false;
 
   console.log("✅ Mot de passe changé !");
+}catch(error:any){
+  console.error('erreur',error)
+}
 };
 
 const currentUser = computed(()=>authStore.user)
@@ -267,7 +271,7 @@ onMounted(async () => {
           <!-- Avatr Upload -->
           <div class="mb-6">
             <AvatarUpload
-              :current-photo="values.photo_profil"
+              :current-photo="`http://localhost:8000${values.photo_profil}`"
               :user-name="`${values.prenom} ${values.nom}`"
               :editable="isEditing"
               size="xl"
