@@ -23,11 +23,17 @@ class RegisterUserAPIView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+
         refresh = RefreshToken.for_user(user)
-        access = refresh.access_token
-        data= serializer.data
-        data["tokens"] = {"refresh": str(refresh), "access": str(access)}
-        return Response(data, status=status.HTTP_201_CREATED)
+
+        return Response({
+            "message": "Inscription valide",
+            "statut": True,
+            "token": {
+                "refresh": str(refresh),
+                "access": str(refresh.access_token)
+            }
+        }, status=status.HTTP_201_CREATED)
 
 
 class UserLoginAPIView(GenericAPIView):
@@ -44,12 +50,14 @@ class UserLoginAPIView(GenericAPIView):
         # Génération des tokens
         token = RefreshToken.for_user(user)
 
-        data = serializers.UserSerializer(user).data
-        data["tokens"] = {
-            "refresh": str(token),
-            "access": str(token.access_token),
-        }
-        return Response(data, status=status.HTTP_200_OK)
+        return Response({
+            "message": "Connexion validé ",
+            "statut": True,
+            "token": {
+                "refresh": str(token),
+                "access": str(token.access_token)
+            }
+        }, status=status.HTTP_201_CREATED)
 
 
 #LOGOUT
