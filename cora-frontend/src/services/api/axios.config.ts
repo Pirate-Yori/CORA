@@ -60,7 +60,7 @@ apiClient.interceptors.response.use(
 
     async (error: AxiosError) => {
         const authStore = useAuthStore()
-        const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
+        const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean, skipAuthRefresh?: boolean }
 
         // Erreur réseau
         if (!error.response) {
@@ -71,7 +71,7 @@ apiClient.interceptors.response.use(
         const { status, data } = error.response as any
 
         //401-Token expiré ou non authentifier
-        if (status === 401 && !originalRequest._retry) {
+        if (status === 401 && !originalRequest._retry && !originalRequest.skipAuthRefresh) {
             // Si déjà en train de refresher, mettre la requête en queue
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
@@ -97,7 +97,7 @@ apiClient.interceptors.response.use(
                 console.log('Pas de refresh token, déconnexion')
                 isRefreshing = false
                 toast.error('Session expirée. Veuillez vous reconnecter.')
-                authStore.logout()
+                authStore.logout(authStore.token)
                 window.location.href = '/auth/login'
                 return Promise.reject(new UnauthorizedError('Session expirée'))
             }
@@ -107,7 +107,7 @@ apiClient.interceptors.response.use(
 
                 // Appeler l'endpoint de refresh (sans passer par l'interceptor)
                 const response = await axios.post(
-                    `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
+                    `${import.meta.env.VITE_API_BASE_URL}/auth/refresh-token/`,
                     { refresh: authStore.refreshToken }
                 )
 
@@ -140,7 +140,7 @@ apiClient.interceptors.response.use(
 
                 // Déconnecter l'utilisateur
                 toast.error('Session expirée. Veuillez vous reconnecter.')
-                authStore.logout()
+                authStore.logout(authStore.token)
                 window.location.href = '/auth/login'
 
                 return Promise.reject(new UnauthorizedError('Session expirée'))

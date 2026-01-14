@@ -24,8 +24,13 @@ class AuthService {
     /**
     * Déconnexion
    */
-    async logout(): Promise<LogoutResponse> {
-        const { data } = await apiClient.post<LogoutResponse>('/auth/logout/')
+    async logout(refresToken:String): Promise<LogoutResponse> {
+        const { data } = await apiClient.post<LogoutResponse>('/auth/logout/',{
+            refresh:refresToken ,
+        },{
+            //Ignorer le refresh
+            skipAuthRefresh:true
+        } as any)
         return data
     }
 

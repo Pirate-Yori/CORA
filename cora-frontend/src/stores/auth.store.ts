@@ -83,10 +83,10 @@ export const useAuthStore = defineStore("auth", () => {
         }
     }
 
-    const logout = async () => {
+    const logout = async (refresh:String) => {
         try {
             if (token.value) {
-                await authService.logout()
+                await authService.logout(refresh)
             }
         } catch (error) {
             console.error("Erreur lors de la déconnexion:", error);
@@ -95,6 +95,7 @@ export const useAuthStore = defineStore("auth", () => {
             //Nettoyer l'état local
             user.value = null;
             token.value = null;
+            refreshToken.value = null;
             //Nettoyer le localStorage
             localStorage.clear();
 
