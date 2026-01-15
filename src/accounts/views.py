@@ -29,10 +29,8 @@ class RegisterUserAPIView(GenericAPIView):
         return Response({
             "message": "Inscription valide",
             "statut": True,
-            "token": {
-                "refresh": str(refresh),
-                "access": str(refresh.access_token)
-            }
+            "refresh": str(refresh),
+            "access": str(refresh.access_token)
         }, status=status.HTTP_201_CREATED)
 
 
@@ -46,18 +44,23 @@ class UserLoginAPIView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         user = serializer.validated_data["user"]
+        classe_info = serializer.validated_data.get("classe")
 
         # Génération des tokens
         token = RefreshToken.for_user(user)
 
-        return Response({
-            "message": "Connexion validé ",
+        response_data = {
+            "message": "Connexion valide",
             "statut": True,
-            "token": {
-                "refresh": str(token),
-                "access": str(token.access_token)
-            }
-        }, status=status.HTTP_201_CREATED)
+            "refresh": str(token),
+            "access": str(token.access_token)
+        }
+        
+        # Ajouter les informations de classe si l'utilisateur est un élève
+        if classe_info:
+            response_data["classe"] = classe_info
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 #LOGOUT

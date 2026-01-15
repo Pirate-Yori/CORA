@@ -61,29 +61,32 @@ L'API utilise JWT (JSON Web Tokens) pour l'authentification. Après la connexion
   "nom": "Doe",
   "prenom": "John",
   "telephone": "+22512345678",
-  "password": "motdepasse123"
+  "password": "motdepasse123",
+  "classe": 1
 }
 ```
+
+**Champs requis**:
+- `nom` : Nom de l'élève (string)
+- `prenom` : Prénom de l'élève (string)
+- `telephone` : Numéro de téléphone au format `+225XXXXXXXX` (string, unique)
+- `password` : Mot de passe (string)
+- `classe` : ID de la classe de l'élève (integer, obligatoire)
 
 **Réponse réussie (201)**:
 ```json
 {
-  "id": 1,
-  "nom": "Doe",
-  "prenom": "John",
-  "telephone": "+22512345678",
-  "created_at": "2024-01-15T10:30:00Z",
-  "role": "eleve",
-  "photo_profil": null,
-  "est_actif": true,
-  "derniere_connexion": null,
-  "updated_at": "2024-01-15T10:30:00Z",
-  "tokens": {
-    "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-    "access": "eyJ0eXAiOiJKV1QiLCJhbGc..."
-  }
+  "message": "Inscription valide",
+  "statut": true,
+  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "access": "eyJ0eXAiOiJKV1QiLCJhbGc..."
 }
 ```
+
+**Note importante** : 
+- Le champ `classe` est **obligatoire** lors de l'inscription
+- L'ID de la classe doit correspondre à une classe existante (voir section Classes)
+- Un profil élève est automatiquement créé avec la classe spécifiée
 
 **Exemple Postman**:
 - Method: `POST`
@@ -107,25 +110,35 @@ L'API utilise JWT (JSON Web Tokens) pour l'authentification. Après la connexion
 }
 ```
 
-**Réponse réussie (200)**:
+**Réponse réussie (201) - Pour un élève**:
 ```json
 {
-  "id": 1,
-  "nom": "Doe",
-  "prenom": "John",
-  "telephone": "+22512345678",
-  "created_at": "2024-01-15T10:30:00Z",
-  "role": "eleve",
-  "photo_profil": null,
-  "est_actif": true,
-  "derniere_connexion": "2024-01-15T10:30:00Z",
-  "updated_at": "2024-01-15T10:30:00Z",
-  "tokens": {
-    "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-    "access": "eyJ0eXAiOiJKV1QiLCJhbGc..."
+  "message": "Connexion valide",
+  "statut": true,
+  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "access": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "classe": {
+    "id": 1,
+    "niveau": "terminale",
+    "serie": "C",
+    "annee_scolaire": "2024-2025"
   }
 }
 ```
+
+**Réponse réussie (201) - Pour un admin ou enseignant**:
+```json
+{
+  "message": "Connexion valide",
+  "statut": true,
+  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "access": "eyJ0eXAiOiJKV1QiLCJhbGc..."
+}
+```
+
+**Note importante** :
+- Pour les utilisateurs avec le rôle `eleve`, la réponse inclut automatiquement les informations de leur classe (`id`, `niveau`, `serie`, `annee_scolaire`)
+- Pour les autres rôles (admin, enseignant), le champ `classe` n'est pas présent dans la réponse
 
 **Erreur (400)**:
 ```json
@@ -411,6 +424,25 @@ Content-Type: application/json
 }
 ```
 
+**Contrainte d'unicité** :
+- La combinaison `niveau` + `serie` + `annee_scolaire` doit être unique
+- Vous pouvez créer plusieurs classes avec le même niveau et la même année scolaire, à condition qu'elles aient des séries différentes
+- Exemples valides :
+  - Terminale C - 2024-2025 ✅
+  - Terminale D - 2024-2025 ✅
+  - Terminale A - 2024-2025 ✅
+- Exemple invalide (duplication) :
+  - Terminale C - 2024-2025 (déjà existante) ❌
+
+**Erreur (400) - Classe déjà existante**:
+```json
+{
+  "non_field_errors": [
+    "Les champs niveau, serie, annee_scolaire doivent former un ensemble unique."
+  ]
+}
+```
+
 ---
 
 ### 10. Classes - Détail, modification, suppression
@@ -589,13 +621,19 @@ Pour faciliter les tests, créez un environnement Postman avec ces variables :
 
 ### Script Postman pour sauvegarder automatiquement les tokens
 
-Dans l'onglet **Tests** de la requête de login, ajoutez :
+Dans l'onglet **Tests** de la requête de login/register, ajoutez :
 
 ```javascript
-if (pm.response.code === 200) {
+if (pm.response.code === 201 || pm.response.code === 200) {
     var jsonData = pm.response.json();
-    pm.environment.set("access_token", jsonData.tokens.access);
-    pm.environment.set("refresh_token", jsonData.tokens.refresh);
+    pm.environment.set("access_token", jsonData.access);
+    pm.environment.set("refresh_token", jsonData.refresh);
+    
+    // Optionnel : sauvegarder les infos de classe si présentes
+    if (jsonData.classe) {
+        pm.environment.set("classe_id", jsonData.classe.id);
+        pm.environment.set("classe_niveau", jsonData.classe.niveau);
+    }
 }
 ```
 
@@ -609,42 +647,63 @@ if (pm.response.code === 200) {
    - Access token : 15 minutes
    - Refresh token : 14 jours
 
-3. **Pagination** : Les endpoints de liste retournent 20 résultats par page par défaut
+3. **Inscription** :
+   - Le champ `classe` est **obligatoire** lors de l'inscription
+   - L'ID de la classe doit correspondre à une classe existante
+   - Un profil élève est automatiquement créé avec la classe spécifiée
 
-4. **Médias** : Les photos de profil sont accessibles via `/media/photos_profils/{filename}`
+4. **Connexion** :
+   - Pour les élèves, la réponse inclut automatiquement les informations de leur classe
+   - Les informations de classe sont disponibles dans `response.classe` (id, niveau, serie, annee_scolaire)
 
-5. **Rôles utilisateurs** :
+5. **Classes** :
+   - La contrainte d'unicité est sur la combinaison `niveau` + `serie` + `annee_scolaire`
+   - Vous pouvez créer plusieurs classes avec le même niveau et année scolaire si les séries diffèrent
+   - Pour les classes de 3ème, utilisez `"general"` comme série
+
+6. **Pagination** : Les endpoints de liste retournent 20 résultats par page par défaut
+
+7. **Médias** : Les photos de profil sont accessibles via `/media/photos_profils/{filename}`
+
+8. **Rôles utilisateurs** :
    - `admin` - Administrateur
    - `enseignant` - Enseignant
    - `eleve` - Élève (par défaut)
 
-6. **CORS** : L'API accepte les requêtes depuis `http://localhost:3000` et Postman
+9. **CORS** : L'API accepte les requêtes depuis `http://localhost:3000` et Postman
 
 ---
 
 ## 🚀 Exemple de workflow complet
 
-1. **Inscription** → `POST /api/auth/register/`
+1. **Lister les classes disponibles** → `GET /school/classes/`
+   - Récupérer l'ID de la classe souhaitée
+
+2. **Inscription** → `POST /api/auth/register/`
+   - Inclure le champ `classe` avec l'ID de la classe
    - Sauvegarder `access_token` et `refresh_token`
 
-2. **Obtenir mes infos** → `GET /api/auth/me/`
+3. **Connexion** → `POST /api/auth/login/`
+   - Pour un élève, la réponse inclut les informations de classe
+   - Sauvegarder `access_token` et `refresh_token`
+
+4. **Obtenir mes infos** → `GET /api/auth/me/`
    - Header: `Authorization: Bearer {{access_token}}`
 
-3. **Lister les classes** → `GET /school/classes/`
+5. **Créer une classe** → `POST /school/classes/`
+   - S'assurer que la combinaison niveau/série/année scolaire est unique
 
-4. **Créer une classe** → `POST /school/classes/`
-
-5. **Modifier mon profil** → `PUT /api/auth/profile`
+6. **Modifier mon profil** → `PUT /api/auth/profile`
    - Header: `Authorization: Bearer {{access_token}}`
 
-6. **Upload photo** → `POST /api/auth/profile/photo`
+7. **Upload photo** → `POST /api/auth/profile/photo`
    - Header: `Authorization: Bearer {{access_token}}`
    - Body: form-data avec fichier
 
-7. **Token expiré ?** → `POST /api/auth/refresh-token/`
+8. **Token expiré ?** → `POST /api/auth/refresh-token/`
    - Body: `{"refresh": "{{refresh_token}}"}`
 
-8. **Déconnexion** → `POST /api/auth/logout/`
+9. **Déconnexion** → `POST /api/auth/logout/`
    - Header: `Authorization: Bearer {{access_token}}`
    - Body: `{"refresh": "{{refresh_token}}"}`
 
