@@ -212,7 +212,7 @@ const classes = ref<Array<{ id: string; libelle: string }>>([
             <option
               v-for="classe in classes"
               :key="classe.id"
-              :value="classe.id"
+              :value="classe.libelle"
             >
               {{ classe.libelle }}
             </option>
