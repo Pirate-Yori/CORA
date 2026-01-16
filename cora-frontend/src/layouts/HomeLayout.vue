@@ -10,9 +10,9 @@ onMounted(() => {
 });
 const authStore = useAuthStore()
 const user = authStore.user
-const refreshToken = authStore.refreshToken
+const  refreshToken = authStore.refreshToken
 const logout= async () =>{
-await authStore.logout(refreshToken)
+await authStore.logout(String(refreshToken))
 }
 </script>
 <template class="min-h-screen bg-gray-50">
