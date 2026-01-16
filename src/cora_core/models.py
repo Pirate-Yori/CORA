@@ -49,14 +49,19 @@ class Classe(models.Model):
         verbose_name = "Classe"
         verbose_name_plural = "Classes"
         ordering = ['niveau', 'serie']
-        unique_together = [['niveau', 'annee_scolaire']]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['niveau', 'serie', 'annee_scolaire'],
+                name='unique_classe_niveau_serie_annee'
+            )
+        ]
         indexes = [
             models.Index(fields=['niveau']),
 
         ]
 
     def __str__(self):
-        return f"{self.niveau} - {self.annee_scolaire}"
+        return f"{self.niveau} - {self.serie}"
 
     def incrementer_nb_eleves(self):
         """Incrémente le nombre d'élèves"""
