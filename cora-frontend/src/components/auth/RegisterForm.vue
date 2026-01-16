@@ -17,7 +17,7 @@ const { values, errors, setValue, setErrors, submit, isSubmitting } =
     {
       nom: "",
       prenom: "",
-      classe: "",
+      classe: 0,
       telephone: "",
       password: "",
       password_confirmation: "",
@@ -212,7 +212,7 @@ const classes = ref<Array<{ id: string; libelle: string }>>([
             <option
               v-for="classe in classes"
               :key="classe.id"
-              :value="classe.libelle"
+              :value="classe.id"
             >
               {{ classe.libelle }}
             </option>

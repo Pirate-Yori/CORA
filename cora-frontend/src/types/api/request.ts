@@ -7,7 +7,7 @@ export interface RegisterRequest {
     password_confirmation: string
     nom: string
     prenom: string
-    classe:string
+    classe:number
 }
 export interface LoginRequest {
     telephone: string
