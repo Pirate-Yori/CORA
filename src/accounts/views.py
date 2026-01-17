@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from . import serializers
-from .serializers import UserRegisterSerializer, ChangePasswordSerializer
+from .serializers import UserRegisterSerializer, ChangePasswordSerializer, UserSerializer
 
 
 # Create your views here.
@@ -25,12 +25,14 @@ class RegisterUserAPIView(GenericAPIView):
         user = serializer.save()
 
         refresh = RefreshToken.for_user(user)
+        user_serializer = UserSerializer(user)
 
         return Response({
             "message": "Inscription valide",
             "statut": True,
             "refresh": str(refresh),
-            "access": str(refresh.access_token)
+            "access": str(refresh.access_token),
+            "user": user_serializer.data
         }, status=status.HTTP_201_CREATED)
 
 
@@ -48,13 +50,16 @@ class UserLoginAPIView(GenericAPIView):
 
         # Génération des tokens
         token = RefreshToken.for_user(user)
+        user_serializer = UserSerializer(user)
 
         response_data = {
             "message": "Connexion valide",
             "statut": True,
             "refresh": str(token),
-            "access": str(token.access_token)
+            "access": str(token.access_token),
+            "user": user_serializer.data
         }
+
         
         # Ajouter les informations de classe si l'utilisateur est un élève
         if classe_info:
