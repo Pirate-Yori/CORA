@@ -10,6 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from . import serializers
 from .serializers import UserRegisterSerializer, ChangePasswordSerializer, UserSerializer
+from .models import Eleve
 
 
 # Create your views here.
@@ -27,13 +28,33 @@ class RegisterUserAPIView(GenericAPIView):
         refresh = RefreshToken.for_user(user)
         user_serializer = UserSerializer(user)
 
-        return Response({
+        # Récupérer les informations de classe si l'utilisateur est un élève
+        classe_info = None
+        if user.role == 'eleve':
+            try:
+                eleve = user.profil_eleve
+                classe_info = {
+                    "id": eleve.classe.id,
+                    "niveau": eleve.classe.niveau,
+                    "serie": eleve.classe.serie,
+                    "annee_scolaire": eleve.classe.annee_scolaire
+                }
+            except (Eleve.DoesNotExist, AttributeError):
+                pass
+
+        response_data = {
             "message": "Inscription valide",
             "statut": True,
             "refresh": str(refresh),
             "access": str(refresh.access_token),
             "user": user_serializer.data
-        }, status=status.HTTP_201_CREATED)
+        }
+
+        # Ajouter les informations de classe si l'utilisateur est un élève
+        if classe_info:
+            response_data["classe"] = classe_info
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 class UserLoginAPIView(GenericAPIView):
