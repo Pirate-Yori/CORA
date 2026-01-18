@@ -36,7 +36,6 @@ const { values, setValue, errors, submit, isSubmitting } = useForm<UpdateUserReq
     ],
     email: [
       {
-        required: true,
         message: "Email est obligatoire",
       },
       { email: true },
@@ -99,6 +98,8 @@ const handleUpdateUser = async ()=>{
       
     }catch(error){
       console.error("erreur lors de l'update",error)
+    }finally {
+      isEditing.value = false
     }
 
   })
@@ -277,7 +278,7 @@ onMounted(async () => {
           <!-- Avatr Upload -->
           <div class="mb-6">
             <AvatarUpload
-              :current-photo="`http://localhost:8000${values.photo_profil}`"
+              :current-photo="values.photo_profil"
               :user-name="`${values.prenom} ${values.nom}`"
               :editable="isEditing"
               size="xl"
@@ -446,7 +447,6 @@ onMounted(async () => {
               label="Email"
               :disabled="!isEditing"
               :error="errors.email"
-              required
             />
 
             <div class="grid md:grid-cols-2 gap-6">
@@ -465,7 +465,6 @@ onMounted(async () => {
                 :disabled="!isEditing"
                 :error="errors.dateNaissance"
                 type="date"
-                required
               />
             </div>
             <div class="grid md:grid-cols-2 gap-6">

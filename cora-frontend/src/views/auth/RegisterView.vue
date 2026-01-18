@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter()
 
 const goToLogin = ()=>{
+    console.log('emmit declenché')
 router.push({name:"Login"})
 }
 const handleSuccess = ()=>{
@@ -14,6 +15,6 @@ const handleSuccess = ()=>{
 
 <template>
     <div>
-        <RegisterForm @success="handleSuccess" @login="goToLogin"/>
+        <RegisterForm @success="goToLogin" @login="goToLogin"/>
     </div>
 </template>

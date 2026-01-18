@@ -70,15 +70,6 @@ const handleRegister = async () => {
 
   await submit(async (formvalues) => {
     try {
-      // const registerData: RegisterRequest = {
-      //   telephone: formvalues.telephone,
-      //   nom: formvalues.nom,
-      //   prenom: formvalues.prenom,
-      //   classe:formvalues.classe,
-      //   password: formvalues.password,
-      //   password_confirmation: formvalues.password_confirmation,
-      // };
-      console.log(formvalues);
       await authStore.register(formvalues);
       emit("success");
     } catch (error: any) {

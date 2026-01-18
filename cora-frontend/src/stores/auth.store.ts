@@ -31,10 +31,10 @@ export const useAuthStore = defineStore("auth", () => {
         error.value = null
         try {
             const response = await authService.register(userData);
-            user.value = response.user;
-            token.value = response.access;
-            refreshToken.value = response?.refresh
-            classe.value = response?.classe || null
+            // user.value = response.user;
+            // token.value = response.access;
+            // refreshToken.value = response?.refresh
+            // classe.value = response?.classe
 
             toast.success('Inscription réussie !')
             return response
@@ -190,6 +190,6 @@ export const useAuthStore = defineStore("auth", () => {
     persist: {
         key: "auth",
         storage: localStorage,
-        pick: ["user", "token", "refreshToken"]
+        pick: ["user", "token", "refreshToken","classe"]
     }
 }) 
