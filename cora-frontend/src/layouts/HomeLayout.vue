@@ -10,6 +10,7 @@ onMounted(() => {
 });
 const authStore = useAuthStore()
 const user = authStore.user
+const isAuthenticated = authStore.isAuthenticated
 const  refreshToken = authStore.refreshToken
 const logout= async () =>{
 await authStore.logout(String(refreshToken))
@@ -18,7 +19,7 @@ await authStore.logout(String(refreshToken))
 <template class="min-h-screen bg-gray-50">
   <!-- Header -->
   <!-- <AppHeader /> -->
-  <AppNavBar :user="user" @logout="logout"/>
+  <AppNavBar :user="user" :isAuthenticated="isAuthenticated" @logout="logout"/>
   <main class="flex transition-all duration-300">
     <div class="p-6">
       <div class="animate-fade-in min-h-screen">

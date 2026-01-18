@@ -7,11 +7,13 @@ import AppButton from "../common/AppButton.vue";
 interface HeaderProps {
   user?: User | null;
   transparent?: boolean;
+  isAuthenticated?: boolean
 }
 
 const props = withDefaults(defineProps<HeaderProps>(), {
   user: null,
   transparent: false,
+  isAuthenticated: false
 });
 
 const emit = defineEmits<{
@@ -52,7 +54,7 @@ const unreadCount = computed(
 );
 
 const headerClasses = computed(() => {
-  const base = "sticky top-0 z-50 transition-all duration-300";
+  const base = "sticky top-0 z-50 transition-all duration-300 fixed w-full";
   const background = props.transparent
     ? "bg-white/80 backdrop-blur-md border-b border-gray-200/50"
     : "bg-white border-b border-gray-200 shadow-sm";
@@ -126,7 +128,7 @@ const goToLogin = () => {
           </router-link>
 
           <!-- Desktop Navigation -->
-          <nav class="hidden md:flex items-center gap-1">
+          <nav v-if="user && isAuthenticated" class="hidden md:flex items-center gap-1">
             <router-link
               to="/courses"
               class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
@@ -152,6 +154,13 @@ const goToLogin = () => {
               Progression
             </router-link>
           </nav>
+
+          <div v-else class="hidden md:flex space-x-8">
+            <a href="#features" class="text-gray-700 hover:text-orange-600 transition">Fonctionnalités</a>
+            <a href="#classes" class="text-gray-700 hover:text-orange-600 transition">Classes</a>
+            <a href="#pricing" class="text-gray-700 hover:text-orange-600 transition">Tarifs</a>
+            <a href="#testimonials" class="text-gray-700 hover:text-orange-600 transition">Témoignages</a>
+          </div>
         </div>
 
         <!-- Right Actions -->
@@ -258,7 +267,7 @@ const goToLogin = () => {
           </div>
 
           <!-- User Menu / Auth Buttons -->
-          <div v-if="user" class="relative">
+          <div v-if="user && isAuthenticated" class="relative">
             <button
               @click="toggleUserMenu"
               class="flex items-center gap-2 hover:bg-gray-100 rounded-lg p-1.5 pr-3 transition-colors"
@@ -432,7 +441,7 @@ const goToLogin = () => {
           </div>
 
           <!-- Navigation Links -->
-          <nav class="space-y-1 px-2">
+          <nav v-if="user && isAuthenticated" class="space-y-1 px-2">
             <a
               @click="navigateTo('/courses')"
               class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg cursor-pointer"
@@ -458,7 +467,11 @@ const goToLogin = () => {
               Progression
             </a>
           </nav>
-
+          <div class="px-4 pt-2 pb-4 space-y-2">
+          <a href="#features" class="block py-2 text-gray-700">Fonctionnalités</a>
+          <a href="#classes" class="block py-2 text-gray-700">Classes</a>
+          <a href="#pricing" class="block py-2 text-gray-700">Tarifs</a>
+          <a href="#testimonials" class="block py-2 text-gray-700">Témoignages</a></div>
           <!-- Auth Buttons Mobile -->
           <div v-if="!user" class="mt-4 px-2 space-y-2">
             <router-link

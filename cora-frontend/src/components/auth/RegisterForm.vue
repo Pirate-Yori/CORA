@@ -97,10 +97,9 @@ const showPasswordConfirmation = ref(false);
 const generalError = ref<string | null>(null);
 const classes = ref<Array<{ id: string; libelle: string }>>([
   { id: "1", libelle: "3ème" },
-  { id: "2", libelle: "Terminale A1" },
-  { id: "3", libelle: "Terminale A2" },
+  { id: "2", libelle: "Terminale A" },
+  { id: "3", libelle: "Terminale C" },
   { id: "4", libelle: "Terminale D" },
-  { id: "5", libelle: "Terminale C" },
 ]);
 </script>
 

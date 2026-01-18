@@ -9,7 +9,7 @@ export interface User{
     telephone:string
     dateNaissance?:string
     etablissement?:string
-    role: 'student' | 'teacher' | 'admin'
+    role: 'eleve' | 'teacher' | 'admin'
     bio?:string
     derniere_connexion?:string
     photo_profil?:string
@@ -17,7 +17,13 @@ export interface User{
     created_at:string
     updated_at:string
 }
-
+export interface Classe {
+    id:number
+    niveau:string
+    serie:string
+    annee_scolaire:string
+    nb_eleve?:number
+}
 export interface UserFormData {
     email:string
     password:string

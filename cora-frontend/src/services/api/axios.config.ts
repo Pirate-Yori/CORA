@@ -97,7 +97,7 @@ apiClient.interceptors.response.use(
                 console.log('Pas de refresh token, déconnexion')
                 isRefreshing = false
                 toast.error('Session expirée. Veuillez vous reconnecter.')
-                authStore.logout(authStore.token)
+                authStore.logout(String(authStore.token))
                 window.location.href = '/auth/login'
                 return Promise.reject(new UnauthorizedError('Session expirée'))
             }
@@ -140,7 +140,8 @@ apiClient.interceptors.response.use(
 
                 // Déconnecter l'utilisateur
                 toast.error('Session expirée. Veuillez vous reconnecter.')
-                authStore.logout(authStore.token)
+                authStore.logout(String
+                    (authStore.token))
                 window.location.href = '/auth/login'
 
                 return Promise.reject(new UnauthorizedError('Session expirée'))
@@ -181,7 +182,9 @@ apiClient.interceptors.response.use(
         }
 
         // Autres erreurs
-        const message = data.message || 'Une erreur est survenue'
+        let message = data.message || 'Une erreur est survenue'
+        if(data.telephone) message=data.telephone[0]
+        else if(data.non_field_errors) message=data.non_field_errors[0]
         toast.error(message)
         return Promise.reject(new ApiException(message, status, data.errors))
     }

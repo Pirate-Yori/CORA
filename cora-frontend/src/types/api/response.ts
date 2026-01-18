@@ -3,7 +3,7 @@
 // RÉPONSES GÉNÉRIQUES
 // ============================================
 
-import type { User } from "../models/User"
+import type { User,Classe } from "../models/User"
 
 export interface MessageResponse {
     message: string
@@ -21,8 +21,9 @@ export interface ApiResponse<T> {
 export interface AuthResponse {
     message:string
     user:User
-    token:string
-    refreshToken?:string
+    access:string
+    refresh?:string
+    classe?:Classe
 }
 export interface LoginResponse extends AuthResponse {}
 export interface RegisterRespone extends AuthResponse {}

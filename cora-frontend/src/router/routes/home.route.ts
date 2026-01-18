@@ -10,7 +10,7 @@ const homeRoutes: RouteRecordRaw[] = [
             {
                 path: "",
                 name: "Home",
-                component: () => import("@/views/home/HomeView.vue"),
+                component: () => import("@/views/home/DashboardView.vue"),
                 meta: {
                     title: "Accueil"
                 }

@@ -94,8 +94,8 @@ const handleEdit = () => {
 const handleUpdateUser = async ()=>{
   await submit(async (formvalues)=>{
     try{
-      console.log("profile",formvalues);
-      await authStore.updateUserData(formvalues)
+      const { photo_profil, classe, ...dataToUpdate } = formvalues;
+      await authStore.updateUserData(dataToUpdate)
       
     }catch(error){
       console.error("erreur lors de l'update",error)
@@ -195,9 +195,15 @@ const loadUserData = ()=>{
 
   //Mapper les donnée
   (Object.keys(values) as Array<keyof UpdateUserRequest>).forEach((key) => {
-    const value = user[key as keyof typeof user];
-    if (value !== undefined) {
-      setValue(key, value as any);
+    if (key === 'classe') {
+      // Mapper la classe depuis l'objet classe du store
+      const classe = authStore.classe;
+      setValue(key, classe ? `${classe.niveau} ${classe.serie}` : '');
+    } else {
+      const value = user[key as keyof typeof user];
+      if (value !== undefined) {
+        setValue(key, value as any);
+      }
     }
   });
 }
@@ -467,7 +473,7 @@ onMounted(async () => {
                 :model-value="String(values.classe)"
                 @update:model-value="setValue('classe', String($event))"
                 label="Classe"
-                :disabled="!isEditing"
+                disabled
                 :error="errors.classe"
                 required
               />

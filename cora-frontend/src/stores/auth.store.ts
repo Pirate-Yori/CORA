@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { User, LoginRequest, RegisterRequest, UpdateUserRequest, ChangePasswordRequest } from "@/types";
+import type { User, LoginRequest, RegisterRequest, UpdateUserRequest, ChangePasswordRequest,Classe } from "@/types";
 import { computed, ref } from "vue";
 import { authService } from "@/services";
 import { useToast } from "vue-toastification";
@@ -11,12 +11,13 @@ export const useAuthStore = defineStore("auth", () => {
     const user = ref<User | null>(null)
     const token = ref<string | null>(null)
     const isLoading = ref(false)
+    const classe = ref<Classe |null|undefined>(null)
     const refreshToken = ref<string | null|undefined>(null)
     const error = ref<string | null>(null)
 
     // Computed
     const isAuthenticated = computed(() => !!token.value && !!user.value)
-    const isStudent = computed(() => user.value?.role === 'student')
+    const isStudent = computed(() => user.value?.role === 'eleve')
     const isTeacher = computed(() => user.value?.role === 'teacher')
     const isAdmin = computed(() => user.value?.role === 'admin')
     const fullName = computed(() =>
@@ -31,18 +32,9 @@ export const useAuthStore = defineStore("auth", () => {
         try {
             const response = await authService.register(userData);
             user.value = response.user;
-            token.value = response.token;
-            refreshToken.value = response?.refreshToken
-
-            //Sauvegarder en localstorage
-            // localStorage.setItem("user", (response.user).toString())
-            // localStorage.setItem("token", response.token)
-
-            // localStorage.setItem('cora_token', response.token)
-            // if (response.refreshToken) {
-            //     localStorage.setItem('cora_refresh_token', response.refreshToken)
-            // }
-            // localStorage.setItem('cora_user', JSON.stringify(response.user))
+            token.value = response.access;
+            refreshToken.value = response?.refresh
+            classe.value = response?.classe || null
 
             toast.success('Inscription réussie !')
             return response
@@ -61,17 +53,10 @@ export const useAuthStore = defineStore("auth", () => {
             const response = await authService.login(credentials);
 
             user.value = response.user;
-            token.value = response.token;
-            refreshToken.value= response.refreshToken
+            token.value = response.access;
+            refreshToken.value= response.refresh
+            classe.value = response?.classe 
 
-            //Sauvegarder en localstorage
-            // localStorage.setItem("user",  response)
-            // localStorage.setItem("token", response.token)
-            localStorage.setItem('cora_token', response.token)
-            if (response.refreshToken) {
-                localStorage.setItem('cora_refresh_token', response.refreshToken)
-            }
-            localStorage.setItem('cora_user', JSON.stringify(response.user))
             toast.success(`Bienvenue ${response.user.nom}`)
             return response
         } catch (error) {
@@ -187,6 +172,7 @@ export const useAuthStore = defineStore("auth", () => {
         token,
         refreshToken,
         isLoading,
+        classe,
 
         //Getters
         isAuthenticated,
