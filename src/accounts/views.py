@@ -91,16 +91,29 @@ class UserMeAPIView(GenericAPIView):
     def get(self, request, *args, **kwargs):
 
         serializer = self.get_serializer(request.user)
-        return Response(serializer.data)
+
+        return Response(
+            {"user" : serializer.data}
+        )
 
 
-#GET and PUT
-class ProfileAPIView(generics.RetrieveUpdateAPIView):
+class ProfileAPIView(GenericAPIView):
     serializer_class = serializers.UserSerializer
     permission_classes = (IsAuthenticated,)
 
-    def get_object(self):
-        return self.request.user
+    def get(self, request):
+        serializer = self.get_serializer(request.user)
+        return Response({"user": serializer.data})
+
+    def put(self, request):
+        serializer = self.get_serializer(
+            request.user,
+            data=request.data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"user": serializer.data})
 #PUT password
 class ChangePasswordAPIView(generics.GenericAPIView):
     serializer_class = serializers.ChangePasswordSerializer
