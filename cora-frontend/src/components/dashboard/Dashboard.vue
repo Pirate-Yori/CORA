@@ -14,9 +14,13 @@ import {
   prochainsCours,
   devoirs,
 } from "@/data/dashboardData";
+import { useAuthStore } from "@/stores";
 
 const router = useRouter();
 const selectedSerie = ref("C");
+const authStore = useAuthStore();
+const user = authStore.user
+const classe = authStore.classe
 
 const currentMatieres = computed(() => matieresBySerie[selectedSerie.value]);
 
@@ -38,8 +42,7 @@ const handleOpenMatiere = (matiere) => {
   >
     <div class="max-w-7xl mx-auto">
       <DashboardHeader
-        :selected-serie="selectedSerie"
-        @update:selected-serie="selectedSerie = $event"
+        :classe="classe"
       />
 
       <StatsCards :stats="stats" />
