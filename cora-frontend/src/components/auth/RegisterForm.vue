@@ -205,9 +205,17 @@ const classes = ref<Array<{ id: string; libelle: string }>>([
           />
 
           <!-- classe -->
-          <select 
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-          v-model="values.classe">
+          <label
+            for="classe"
+            class="block text-sm font-medium text-gray-700 mb-2"
+            >Classe</label
+          >
+          <select
+            class="w-full px-4 py-2.5 border-gray-300 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 placeholder-primary-400 bg-white focus:bg-white "
+            v-model="values.classe"
+            :class="{ 'border-danger-500 focus:ring-danger-500 bg-danger-50 ': errors.classe }"
+          >
+            <option value="" disabled>Choisir votre classe</option>
             <option
               v-for="classe in classes"
               :key="classe.id"
@@ -216,6 +224,9 @@ const classes = ref<Array<{ id: string; libelle: string }>>([
               {{ classe.libelle }}
             </option>
           </select>
+          <p v-if="errors.classe" class="text-red-600 text-sm">
+            {{ errors.classe }}
+          </p>
 
           <AppInput
             :model-value="values.password"

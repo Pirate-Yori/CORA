@@ -57,7 +57,7 @@ class UserLoginAPIView(GenericAPIView):
             "statut": True,
             "refresh": str(token),
             "access": str(token.access_token),
-            "user": user_serializer.data
+            "user":user
         }
 
         
