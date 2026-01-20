@@ -1,3 +1,4 @@
+import Dashboard from "@/components/dashboard/Dashboard.vue";
 import type { RouteRecordRaw } from "vue-router";
 
 const homeRoutes: RouteRecordRaw[] = [
@@ -24,6 +25,15 @@ const homeRoutes: RouteRecordRaw[] = [
                     requiresAuth: true,
                 }
             },
+            {
+                path:'/dashboard',
+                name:'Dashboard',
+                component:()=>Dashboard,
+                meta:{
+                    title:'Dashboard',
+                    requiresAuth:false
+                }
+            }
         ]
     }
 ]

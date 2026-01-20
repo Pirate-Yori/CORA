@@ -7,13 +7,13 @@ const router = useRouter()
 const goToLogin = ()=>{
 router.push({name:"Login"})
 }
-const handleSuccess = ()=>{
-    router.push({name:"Home"})
+const goToHome = ()=>{
+    router.push({name:'Home'})
 }
 </script>
 
 <template>
     <div>
-        <RegisterForm @success="handleSuccess" @login="goToLogin"/>
+        <RegisterForm @success="goToLogin" @login="goToLogin" @home="goToHome"/>
     </div>
 </template>
