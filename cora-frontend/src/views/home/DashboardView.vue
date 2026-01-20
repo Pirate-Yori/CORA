@@ -1,12 +1,12 @@
 <template>
-  <div class="min-h-screen bg-linear-to-br from-orange-50 via-white to-green-50">
+  <div class="min-h-screen bg-linear-to-br from-primary-50 via-white to-indigo-50">
     <!-- Navigation -->
    
 
     <!-- Hero Section -->
     <section class="pt-32 pb-20 px-4">
       <div class="max-w-7xl mx-auto text-center">
-        <div class="inline-flex items-center space-x-2 bg-orange-100 text-orange-700 px-4 py-2 rounded-full mb-6">
+        <div class="inline-flex items-center space-x-2 bg-primary-100 text-primary-700 px-4 py-2 rounded-full mb-6">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
@@ -15,9 +15,9 @@
         
         <h1 class="text-5xl md:text-7xl font-bold text-gray-900 mb-6">
           Réussissez votre
-          <span class="bg-linear-to-r from-orange-600 to-green-600 bg-clip-text text-transparent"> BEPC </span>
+          <span class="bg-linear-to-r from-primary-600 to-indigo-600 bg-clip-text text-transparent"> BEPC </span>
           et votre
-          <span class="bg-linear-to-r from-orange-600 to-green-600 bg-clip-text text-transparent"> BAC</span>
+          <span class="bg-linear-to-r from-primary-600 to-indigo-600 bg-clip-text text-transparent"> BAC</span>
         </h1>
         
         <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
@@ -26,32 +26,32 @@
         </p>
 
         <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <button class="px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-500 text-white rounded-xl font-semibold text-lg hover:shadow-2xl transition transform hover:scale-105 flex items-center justify-center space-x-2">
+          <button class="px-8 py-4 bg-linear-to-r from-primary-600 to-primary-500 text-white rounded-xl font-semibold text-lg hover:shadow-2xl transition transform hover:scale-105 flex items-center justify-center space-x-2">
             <span>Commencer gratuitement</span>
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
             </svg>
           </button>
-          <button class="px-8 py-4 bg-white text-orange-600 border-2 border-orange-600 rounded-xl font-semibold text-lg hover:bg-orange-50 transition">
+          <button class="px-8 py-4 bg-white text-primary-600 border-2 border-primary-600 rounded-xl font-semibold text-lg hover:bg-primary-50 transition">
             Voir une démo
           </button>
         </div>
 
         <div class="flex flex-wrap justify-center gap-8 text-sm text-gray-600">
           <div class="flex items-center space-x-2">
-            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
             </svg>
             <span>Sans engagement</span>
           </div>
           <div class="flex items-center space-x-2">
-            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
             </svg>
             <span>7 jours gratuits</span>
           </div>
           <div class="flex items-center space-x-2">
-            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
             </svg>
             <span>Accessible sur mobile</span>
@@ -61,12 +61,12 @@
     </section>
 
     <!-- Stats Section -->
-    <section class="py-12 bg-gradient-to-r from-orange-600 to-green-600">
+    <section class="py-12 bg-linear-to-r from-primary-600 to-indigo-600">
       <div class="max-w-7xl mx-auto px-4">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div v-for="stat in stats" :key="stat.label" class="text-center text-white">
             <div class="text-4xl md:text-5xl font-bold mb-2">{{ stat.number }}</div>
-            <div class="text-orange-100">{{ stat.label }}</div>
+            <div class="text-primary-100">{{ stat.label }}</div>
           </div>
         </div>
       </div>
@@ -82,7 +82,7 @@
 
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div v-for="feature in features" :key="feature.title" class="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
-            <div class="w-12 h-12 bg-gradient-to-r from-orange-600 to-orange-500 rounded-xl flex items-center justify-center text-white mb-4">
+            <div class="w-12 h-12 bg-linear-to-r from-primary-600 to-primary-500 rounded-xl flex items-center justify-center text-white mb-4">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="feature.icon"/>
               </svg>
@@ -103,10 +103,10 @@
         </div>
 
         <div class="flex justify-center gap-4 mb-12">
-          <button @click="selectedClass = '3e'" :class="['px-8 py-3 rounded-xl font-semibold transition', selectedClass === '3e' ? 'bg-gradient-to-r from-orange-600 to-orange-500 text-white shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-100']">
+          <button @click="selectedClass = '3e'" :class="['px-8 py-3 rounded-xl font-semibold transition', selectedClass === '3e' ? 'bg-linear-to-r from-primary-600 to-primary-500 text-white shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-100']">
             Classe de 3ème (BEPC)
           </button>
-          <button @click="selectedClass = 'tle'" :class="['px-8 py-3 rounded-xl font-semibold transition', selectedClass === 'tle' ? 'bg-gradient-to-r from-orange-600 to-orange-500 text-white shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-100']">
+          <button @click="selectedClass = 'tle'" :class="['px-8 py-3 rounded-xl font-semibold transition', selectedClass === 'tle' ? 'bg-linear-to-r from-primary-600 to-primary-500 text-white shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-100']">
             Terminale (BAC)
           </button>
         </div>
@@ -114,8 +114,8 @@
         <div class="bg-white rounded-2xl shadow-xl p-8">
           <h3 class="text-2xl font-bold text-gray-900 mb-6">Matières disponibles pour {{ selectedClass === '3e' ? 'la 3ème' : 'la Terminale' }}</h3>
           <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <div v-for="subject in currentSubjects" :key="subject" class="flex items-center space-x-2 p-3 bg-gradient-to-r from-orange-50 to-green-50 rounded-lg">
-              <svg class="w-5 h-5 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <div v-for="subject in currentSubjects" :key="subject" class="flex items-center space-x-2 p-3 bg-linear-to-r from-primary-50 to-indigo-50 rounded-lg">
+              <svg class="w-5 h-5 text-indigo-600 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
               </svg>
               <span class="text-gray-800 font-medium">{{ subject }}</span>
@@ -134,8 +134,8 @@
         </div>
 
         <div class="grid md:grid-cols-3 gap-8">
-          <div v-for="plan in pricing" :key="plan.name" :class="['bg-white rounded-2xl shadow-xl p-8', plan.popular ? 'ring-4 ring-orange-600 transform scale-105' : '']">
-            <div v-if="plan.popular" class="bg-gradient-to-r from-orange-600 to-orange-500 text-white text-sm font-bold px-4 py-1 rounded-full inline-block mb-4">
+          <div v-for="plan in pricing" :key="plan.name" :class="['bg-white rounded-2xl shadow-xl p-8', plan.popular ? 'ring-4 ring-primary-600 transform scale-105' : '']">
+            <div v-if="plan.popular" class="bg-linear-to-r from-primary-600 to-primary-500 text-white text-sm font-bold px-4 py-1 rounded-full inline-block mb-4">
               Le plus populaire
             </div>
             <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ plan.name }}</h3>
@@ -145,13 +145,13 @@
             </div>
             <ul class="space-y-4 mb-8">
               <li v-for="feature in plan.features" :key="feature" class="flex items-start space-x-3">
-                <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                 </svg>
                 <span class="text-gray-700">{{ feature }}</span>
               </li>
             </ul>
-            <button :class="['w-full py-3 rounded-xl font-semibold transition', plan.popular ? 'bg-gradient-to-r from-orange-600 to-orange-500 text-white hover:shadow-lg transform hover:scale-105' : 'bg-gray-100 text-gray-900 hover:bg-gray-200']">
+            <button :class="['w-full py-3 rounded-xl font-semibold transition', plan.popular ? 'bg-linear-to-r from-primary-600 to-primary-500 text-white hover:shadow-lg transform hover:scale-105' : 'bg-gray-100 text-gray-900 hover:bg-gray-200']">
               Choisir ce plan
             </button>
           </div>
@@ -160,7 +160,7 @@
     </section>
 
     <!-- Testimonials Section -->
-    <section id="testimonials" class="py-20 px-4 bg-gradient-to-br from-orange-50 to-green-50">
+    <section id="testimonials" class="py-20 px-4 bg-linear-to-br from-primary-50 to-indigo-50">
       <div class="max-w-7xl mx-auto">
         <div class="text-center mb-16">
           <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Ils ont réussi avec CORA</h2>
@@ -178,7 +178,7 @@
             <div class="border-t pt-4">
               <div class="font-semibold text-gray-900">{{ testimonial.name }}</div>
               <div class="text-sm text-gray-600">{{ testimonial.class }}</div>
-              <div class="text-sm text-orange-600 font-medium mt-1">{{ testimonial.grade }}</div>
+              <div class="text-sm text-primary-600 font-medium mt-1">{{ testimonial.grade }}</div>
             </div>
           </div>
         </div>
@@ -186,14 +186,14 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="py-20 px-4 bg-linear-to-r from-orange-600 to-green-600">
+    <section class="py-20 px-4 bg-linear-to-r from-primary-600 to-indigo-600">
       <div class="max-w-4xl mx-auto text-center text-white">
         <h2 class="text-4xl md:text-5xl font-bold mb-6">Prêt à réussir vos examens ?</h2>
-        <p class="text-xl mb-8 text-orange-100">Rejoignez les milliers d'élèves qui ont déjà choisi CORA pour leur réussite</p>
-        <button class="px-8 py-4 bg-white text-orange-600 rounded-xl font-semibold text-lg hover:shadow-2xl transition transform hover:scale-105">
+        <p class="text-xl mb-8 text-primary-100">Rejoignez les milliers d'élèves qui ont déjà choisi CORA pour leur réussite</p>
+        <button class="px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold text-lg hover:shadow-2xl transition transform hover:scale-105">
           Commencer maintenant - 7 jours gratuits
         </button>
-        <p class="mt-4 text-orange-100 text-sm">Sans carte bancaire • Sans engagement • Annulation à tout moment</p>
+        <p class="mt-4 text-primary-100 text-sm">Sans carte bancaire • Sans engagement • Annulation à tout moment</p>
       </div>
     </section>
 
