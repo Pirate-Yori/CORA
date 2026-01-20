@@ -4,22 +4,29 @@ import AppHeader from "@/components/layouts/AppHeader.vue";
 import AppNavBar from "@/components/layouts/AppNavBar.vue";
 import { useAuthStore } from "@/stores";
 import { onMounted } from "vue";
+import { useRouter } from "vue-router";
 
 onMounted(() => {
   console.log("MainLayout mounted");
 });
-const authStore = useAuthStore()
-const user = authStore.user
-const isAuthenticated = authStore.isAuthenticated
-const  refreshToken = authStore.refreshToken
-const logout= async () =>{
-await authStore.logout(String(refreshToken))
-}
+const authStore = useAuthStore();
+const router = useRouter();
+const user = authStore.user;
+const isAuthenticated = authStore.isAuthenticated;
+const refreshToken = authStore.refreshToken;
+const logout = async () => {
+  try {
+    await authStore.logout(String(refreshToken));
+    return router.push({ name: "Login" });
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+};
 </script>
 <template class="min-h-screen bg-gray-50">
   <!-- Header -->
   <!-- <AppHeader /> -->
-  <AppNavBar :user="user" :isAuthenticated="isAuthenticated" @logout="logout"/>
+  <AppNavBar :user="user" :isAuthenticated="isAuthenticated" @logout="logout" />
   <main class="flex transition-all duration-300">
     <div class="p-6">
       <div class="animate-fade-in min-h-screen">
