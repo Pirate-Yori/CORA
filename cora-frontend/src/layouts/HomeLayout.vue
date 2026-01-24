@@ -28,8 +28,8 @@ const logout = async () => {
   <!-- <AppHeader /> -->
   <AppNavBar :user="user" :isAuthenticated="isAuthenticated" @logout="logout" />
   <main class="flex transition-all duration-300">
-    <div class="p-6">
-      <div class="animate-fade-in min-h-screen">
+    <div class="p-6 w-full">
+      <div class="animate-fade-in min-h-screen ">
         <RouterView />
       </div>
     </div>

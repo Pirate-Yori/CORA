@@ -1,16 +1,6 @@
 <script setup lang="ts">
-interface Matiere {
-  id: number;
-  icon: string;
-  statusColor?: string;
-  status: string;
-  nom: string;
-  professeur: string;
-  colorBg:string;
-  progression:string;
-  progressColor:string;
-  prochainCours:string
-}
+import type { Matiere } from '@/types';
+
 
 const props = defineProps<{ matiere: Matiere }>();
 </script>
