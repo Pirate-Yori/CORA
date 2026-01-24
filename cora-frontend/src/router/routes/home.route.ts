@@ -1,4 +1,5 @@
 import Dashboard from "@/components/dashboard/Dashboard.vue";
+import LandingView from "@/views/dasboard/LandingView.vue";
 import type { RouteRecordRaw } from "vue-router";
 
 const homeRoutes: RouteRecordRaw[] = [
@@ -29,6 +30,15 @@ const homeRoutes: RouteRecordRaw[] = [
                 path:'/dashboard',
                 name:'Dashboard',
                 component:()=>Dashboard,
+                meta:{
+                    title:'Dashboard',
+                    requiresAuth:false
+                }
+            },
+            {
+                path:'/dashboard2',
+                name:'Dashboard2',
+                component:()=>LandingView,
                 meta:{
                     title:'Dashboard',
                     requiresAuth:false

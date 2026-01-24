@@ -38,7 +38,7 @@ const handleOpenMatiere = (matiere) => {
 
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-orange-50 via-green-50 to-orange-50 p-6"
+    class="min-h-screen bg-linear-to-br from-orange-50 via-green-50 to-orange-50 p-6"
   >
     <div class="max-w-7xl mx-auto">
       <DashboardHeader
