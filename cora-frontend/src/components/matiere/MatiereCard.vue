@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { Matiere } from '@/types';
-
+import type { Matiere } from "@/types";
 
 const props = defineProps<{ matiere: Matiere }>();
 </script>

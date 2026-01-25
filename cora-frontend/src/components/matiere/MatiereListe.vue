@@ -8,6 +8,8 @@ const props = defineProps<{
   loading: boolean;
 }>();
 
+defineEmits(["open-matiere"]);
+
 //computed
 const hasMatierers = computed(
   () => props.matieres && props.matieres.length > 0,
@@ -35,9 +37,10 @@ const hasMatierers = computed(
   </p>
   <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <MatiereCard
-      v-for="matiere in matieres"
-      :key="matiere.id"
+      v-for="(matiere,index) in matieres"
+      :key="index"
       :matiere="matiere"
+      @click="$emit('open-matiere', matiere)"
     />
   </div>
 </template>

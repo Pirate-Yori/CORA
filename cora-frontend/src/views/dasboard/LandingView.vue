@@ -142,98 +142,17 @@
             :matieres="matieres"
             titre="vos matiere"
             :loading="false"
+            @open-matiere="handleMatier"
           />
 
           <!-- Devoirs à venir -->
-          <section>
-            <div class="flex items-center justify-between mb-6">
-              <h3 class="text-2xl font-bold text-gray-800">Devoirs à venir</h3>
-              <button
-                class="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
-              >
-                Voir tout
-              </button>
-            </div>
+          <DevoirsListe
+            :devoirs="devoirs"
+            titre="Devoir à venir"
+            :loading="false"
+          />
 
-            <div
-              class="bg-white rounded-2xl shadow-sm border border-gray-100 divide-y divide-gray-100"
-            >
-              <div
-                v-for="devoir in devoirs"
-                :key="devoir.id"
-                class="p-6 hover:bg-gray-50 transition-colors cursor-pointer"
-              >
-                <div class="flex items-start gap-4">
-                  <div
-                    :class="[
-                      'w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0',
-                      devoir.colorBg,
-                    ]"
-                  >
-                    <span class="text-xl">{{ devoir.icon }}</span>
-                  </div>
-
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-start justify-between mb-2">
-                      <div>
-                        <h4 class="text-base font-semibold text-gray-800 mb-1">
-                          {{ devoir.titre }}
-                        </h4>
-                        <p class="text-sm text-gray-500">
-                          {{ devoir.matiere }}
-                        </p>
-                      </div>
-                      <span
-                        :class="[
-                          'px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap',
-                          devoir.priorityColor,
-                        ]"
-                      >
-                        {{ devoir.priorite }}
-                      </span>
-                    </div>
-
-                    <div
-                      class="flex items-center gap-4 text-sm text-gray-500 mt-3"
-                    >
-                      <span class="flex items-center gap-1">
-                        <svg
-                          class="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
-                        </svg>
-                        {{ devoir.dateRemise }}
-                      </span>
-                      <span class="flex items-center gap-1">
-                        <svg
-                          class="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                        {{ devoir.tempsEstime }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+          <CoursListe :cours="[]" :loading="false" titre="Cours à venir" />
         </div>
 
         <!-- Colonne de droite (1/3) -->
@@ -251,7 +170,7 @@
                 <div class="flex items-start gap-3 mb-3">
                   <div
                     :class="[
-                      'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0',
+                      'w-10 h-10 rounded-full flex items-center justify-center shrink-0',
                       annonce.colorBg,
                     ]"
                   >
@@ -322,10 +241,15 @@
 </template>
 
 <script setup lang="ts">
+import CoursListe from "@/components/cours/CoursListe.vue";
+import DevoirsListe from "@/components/devoir/DevoirsListe.vue";
 import MatiereListe from "@/components/matiere/MatiereListe.vue";
-import type { Matiere } from "@/types";
+import type { Devoir, Matiere } from "@/types";
 import { ref } from "vue";
 
+const handleMatier = (matiere: Matiere) => {
+  console.log("matier cliclé", matiere);
+};
 // Données utilisateur
 const user = ref({
   prenom: "Jean",
@@ -395,7 +319,7 @@ const matieres = ref<Matiere[]>([
 ]);
 
 // Devoirs
-const devoirs = ref([
+const devoirs = ref<Devoir[]>([
   {
     id: 1,
     titre: "Dissertation sur le romantisme",
