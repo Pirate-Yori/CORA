@@ -1,4 +1,10 @@
 from django.db import models
+from urllib3.util import Url
+
+
+
+from accounts.models import Eleve
+
 
 # Create your models here.
 
@@ -111,3 +117,102 @@ class Matiere(models.Model):
 
         def __str__(self):
             return f"{self.nom_matiere}"
+
+class Cours(models.Model):
+    numero = models.IntegerField()
+    titre = models.CharField()
+    description = models.TextField()
+    dure_totale = models.IntegerField(null=True)
+    date_creation = models.DateTimeField(auto_now_add=True)
+    date_modification = models.DateTimeField(auto_now=True)
+
+    #Pour les foreigns
+    matiere = models.ForeignKey(Matiere, on_delete=models.CASCADE)
+    clsse = models.ForeignKey(Classe, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'cours'
+        verbose_name = "cours"
+        verbose_name_plural = "cours"
+        ordering = ['numero']
+
+    def __str__(self):
+        return f"{self.titre} - {self.numero}"
+
+class Chapitre(models.Model):
+    titre = models.CharField()
+    description = models.TextField()
+    numero = models.IntegerField()
+    date_creation = models.DateTimeField(auto_now_add=True)
+    date_modification = models.DateTimeField(auto_now=True)
+
+    cours = models.ForeignKey(Cours, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'chapitre'
+        verbose_name = "chapitre"
+        verbose_name_plural = "chapitres"
+        ordering = ['numero']
+    def __str__(self):
+        return f"{self.titre} - {self.numero}"
+
+class Ressource(models.Model):
+    TYPE_RESSOURCE =[
+        ("video", "Video"),
+        ("audio", "Audio"),
+        ("document", "Document"),
+
+    ]
+
+    titre = models.CharField()
+    type_ressource = models.Choices(TYPE_RESSOURCE)
+    url_video = models.URLField(null=True)
+    fichier =  models.FileField(null=True)
+    duree = models.IntegerField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+    chapitre = models.ForeignKey(Chapitre, on_delete=models.CASCADE)
+
+class ProgressionEleve(models.Model):
+    pourcentage_progression = models.IntegerField(default=0)
+    est_termine = models.BooleanField(default=False)
+    date_debut = models.DateTimeField(auto_now_add=True)
+    date_fin = models.DateTimeField(auto_now=True)
+    derniere_activite = models.DateTimeField(auto_now=True)
+    temps_totale_passe = models.IntegerField(default=0)
+
+    eleve = models.ForeignKey(Eleve, on_delete=models.CASCADE)
+    cours = models.ForeignKey(Cours, on_delete=models.CASCADE)
+
+class Quiz(models.Model):
+    titre = models.CharField()
+    description = models.TextField()
+    point_max = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    duree_estime = models.IntegerField(default=0)
+    fichier = models.FileField(null=True)
+
+
+    #Foreignkey
+    chapitre = models.ForeignKey(Chapitre, on_delete=models.CASCADE)
+    cours = models.ForeignKey(Cours, on_delete=models.CASCADE)
+
+
+
+
+
+class TentativeQuiz(models.Model):
+    date_tentative = models.DateTimeField(auto_now_add=True)
+    note = models.DecimalField(max_digits=5, decimal_places=2)
+    reponses = models.JSONField(null=True)
+    estTermine = models.BooleanField(default=False)
+    temps_totale_passe = models.IntegerField(default=0)
+    commentaire = models.TextField(null=True)
+
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    eleve = models.ForeignKey(Eleve, on_delete=models.CASCADE)
+
+
+
+
