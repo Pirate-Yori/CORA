@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router"
 import authRoutes from "./routes/auth.routes";
 import { authGuard } from "./guards/auth.guard";
 import homeRoutes from "./routes/home.route";
+import dashboardRoutes from "./routes/dashboard.routes";
 
 const routes: RouteRecordRaw[]=[
     //Redirection Dashbord
@@ -11,6 +12,7 @@ const routes: RouteRecordRaw[]=[
     },
     ...authRoutes,
     ...homeRoutes,
+    ...dashboardRoutes,
     //Route 404 - Page non trouvée
     {
         path: '/:pathMatch(.*)*',

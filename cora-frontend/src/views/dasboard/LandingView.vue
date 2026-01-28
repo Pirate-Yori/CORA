@@ -246,9 +246,13 @@ import DevoirsListe from "@/components/devoir/DevoirsListe.vue";
 import MatiereListe from "@/components/matiere/MatiereListe.vue";
 import type { Devoir, Matiere } from "@/types";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter()
 
 const handleMatier = (matiere: Matiere) => {
   console.log("matier cliclé", matiere);
+  router.push({name:'detail2'})
 };
 // Données utilisateur
 const user = ref({

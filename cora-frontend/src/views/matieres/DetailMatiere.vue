@@ -362,7 +362,6 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const tabActif = ref('cours');
-const router = useRouter()
 
 // Données de la matière
 const matiere = ref({
@@ -395,6 +394,7 @@ const matiere = ref({
 const progression = computed(() => 
   Math.round((matiere.value.coursTermines / matiere.value.totalCours) * 100)
 );
+const router = useRouter()
 
 // Liste des cours
 const coursList = ref([
@@ -460,9 +460,8 @@ const naviguerVersCours = (coursId: number) => {
   const cours = coursList.value.find(c => c.id === coursId);
   if (cours && !cours.verrouille) {
     console.log('Navigation vers le cours:', coursId);
-    router.push({name:"detail"})
     // Ici, vous pouvez utiliser le router pour naviguer
-    // router.push({ name: 'CoursChapitres', params: { coursId } })
+    router.push({ name: 'CoursChapitres', params: { coursId } })
   }
 };
 </script>
