@@ -1,8 +1,6 @@
-import CoursDetail from "@/components/cours/CoursDetail.vue";
-import MatiereDetail from "@/components/matiere/MatiereDetail.vue";
 import DashboardLayout from "@/layouts/DashboardLayout.vue";
 import LandingView from "@/views/dasboard/LandingView.vue";
-import DashboardView from "@/views/home/DashboardView.vue";
+import Dashboard from "@/views/Dashboard.vue";
 import CoursChapitres from "@/views/matieres/CoursChapitres.vue";
 import DetailMatiere from "@/views/matieres/DetailMatiere.vue";
 import Leçon from "@/views/matieres/Leçon.vue";
@@ -20,7 +18,7 @@ const dashboardRoutes: RouteRecordRaw[] = [
             {
                 path: "dashboard",
                 name: "Dashboard",
-                component: () => LandingView,
+                component: () => Dashboard,
                 meta: {
                     title: "Dashboard"
                 }
@@ -53,8 +51,9 @@ const dashboardRoutes: RouteRecordRaw[] = [
                     },
                     //Leçon d'un cours spécifique
                     {
-                        path: ":matiereId/cours/:coursId/chapitre/:chapitreId/lecon/:leconId",
+                        path: ":matiereId/cours/:coursId/chapitre/:chapitreId/lesson/:lessonId",
                         name: "Leçon",
+                        props:true,
                         component: () => Leçon,
                         meta: {
                             title: "Leçon"

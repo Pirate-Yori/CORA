@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { User, LoginRequest, RegisterRequest, UpdateUserRequest, ChangePasswordRequest,Classe } from "@/types";
+import type { User, LoginRequest, RegisterRequest, UpdateUserRequest, ChangePasswordRequest, Classe } from "@/types";
 import { computed, ref } from "vue";
 import { authService } from "@/services";
 import { useToast } from "vue-toastification";
@@ -11,8 +11,8 @@ export const useAuthStore = defineStore("auth", () => {
     const user = ref<User | null>(null)
     const token = ref<string | null>(null)
     const isLoading = ref(false)
-    const classe = ref<Classe |null|undefined>(null)
-    const refreshToken = ref<string | null|undefined>(null)
+    const classe = ref<Classe | null | undefined>(null)
+    const refreshToken = ref<string | null | undefined>(null)
     const error = ref<string | null>(null)
 
     // Computed
@@ -54,8 +54,8 @@ export const useAuthStore = defineStore("auth", () => {
 
             user.value = response.user;
             token.value = response.access;
-            refreshToken.value= response.refresh
-            classe.value = response?.classe 
+            refreshToken.value = response.refresh
+            classe.value = response?.classe
 
             toast.success(`Bienvenue ${response.user.nom}`)
             return response
@@ -68,7 +68,7 @@ export const useAuthStore = defineStore("auth", () => {
         }
     }
 
-    const logout = async (refresh:String) => {
+    const logout = async (refresh: String) => {
         try {
             if (token.value) {
                 await authService.logout(refresh)
@@ -108,40 +108,40 @@ export const useAuthStore = defineStore("auth", () => {
         }
     }
 
-    const uploadPhoto = async (file:File):Promise<string>=>{
+    const uploadPhoto = async (file: File): Promise<string> => {
         isLoading.value = true
         error.value = null
 
-        try{
-            const formData =new FormData()
-            formData.append('photo',file)
+        try {
+            const formData = new FormData()
+            formData.append('photo', file)
             // formData.append('userId',user.value?.id || '')
 
             const response = await authService.uploadPhoto(formData)
 
-            if(user.value){
+            if (user.value) {
                 user.value.photo_profil = response.photo_profil
             }
-            console.log('photo',response)
+            console.log('photo', response)
 
             return response.photo_profil
-        }catch(err:any){
+        } catch (err: any) {
             err.value = err.response?.data?.message
             throw err
-        }finally{
-            isLoading.value=false
+        } finally {
+            isLoading.value = false
         }
     }
 
-    const updateUserData = async(updateData: UpdateUserRequest)=>{
+    const updateUserData = async (updateData: UpdateUserRequest) => {
         isLoading.value = true
-        try{
+        try {
             const response = await authService.updateUser(updateData)
             user.value = response.user
 
             toast.success('Profil mis à jour avec success !')
             return response
-        }catch (error) {
+        } catch (error) {
             console.error("Erreur lors de la connexion:", error);
             toast.error("Oups une erreur s'est produite")
             throw error;
@@ -150,13 +150,13 @@ export const useAuthStore = defineStore("auth", () => {
         }
     }
 
-    const changePassword = async(newPasswordData:ChangePasswordRequest)=>{
+    const changePassword = async (newPasswordData: ChangePasswordRequest) => {
         isLoading.value = true
-        try{
+        try {
             const response = await authService.ChangePassword(newPasswordData)
             toast.success('Mot de passe changé avec success !')
             return response
-        }catch (error) {
+        } catch (error) {
             console.error("Erreur lors du changement", error);
             toast.error("Oups une erreur s'est produite")
             throw error;
@@ -190,6 +190,6 @@ export const useAuthStore = defineStore("auth", () => {
     persist: {
         key: "auth",
         storage: localStorage,
-        pick: ["user", "token", "refreshToken","classe"]
+        pick: ["user", "token", "refreshToken", "classe"]
     }
 }) 

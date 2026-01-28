@@ -83,7 +83,7 @@
                   @click="naviguerVersLecon(lesson.id)"
                   :class="[
                     'w-full flex items-center gap-3 px-6 py-3 text-left transition-colors',
-                    lesson.id === leconId
+                    lesson.id === lessonId
                       ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600'
                       : 'hover:bg-gray-50 text-gray-600 border-l-4 border-transparent'
                   ]"
@@ -93,7 +93,7 @@
                     <svg v-if="lesson.completed" class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <div v-else-if="lesson.id === leconId" class="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
+                    <div v-else-if="lesson.id === lessonId" class="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
                       <div class="w-2 h-2 bg-white rounded-full"></div>
                     </div>
                     <div v-else class="w-5 h-5 border-2 border-gray-300 rounded-full"></div>
@@ -311,7 +311,7 @@ const route = useRoute();
 const matiereId = ref(route.params.matiereId);
 const coursId = ref(route.params.coursId);
 const chapitreId = ref(route.params.chapitreId);
-const leconId = ref(Number(route.params.leconId));
+const lessonId = ref(Number(route.params.lessonId));
 
 // Données (à remplacer par des appels API)
 const matiere = ref({ nom: 'Mathématiques' });
@@ -428,10 +428,16 @@ const toggleChapitre = (chapitreId: number) => {
   }
 };
 
-const naviguerVersLecon = (nouvelleLeconId: number) => {
-  leconId.value = nouvelleLeconId;
+const naviguerVersLecon = (nouvelleleçonId: number) => {
+  lessonId.value = nouvelleleçonId;
   // En réalité, vous feriez un router.push ici
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // window.scrollTo({ top: 0, behavior: 'smooth' });
+  router.push({name:"Leçon",params:{
+    matiereId: matiereId.value,
+    coursId:coursId.value,
+    chapitreId:chapitreId.value,
+    lessonId:nouvelleleçonId
+  }})
 };
 
 const selectionnerReponse = (questionIndex: number, optionIndex: number) => {
@@ -455,7 +461,7 @@ const toutesLesLecons = computed(() => {
 });
 
 const leconIndex = computed(() => 
-  toutesLesLecons.value.findIndex(l => l.id === leconId.value)
+  toutesLesLecons.value.findIndex(l => l.id === lessonId.value)
 );
 
 const leconPrecedente = computed(() => 
