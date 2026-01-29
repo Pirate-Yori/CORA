@@ -3,6 +3,7 @@
 // RÉPONSES GÉNÉRIQUES
 // ============================================
 
+import type { Matiere } from "../models/Matiere"
 import type { User,Classe } from "../models/User"
 
 export interface MessageResponse {
@@ -33,4 +34,14 @@ export interface MeResponse{
 }
 export interface LogoutResponse{
     message:string
+}
+
+//=========================================
+// Matiere response
+//===========================================
+export interface MatiereResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Matiere[];
 }

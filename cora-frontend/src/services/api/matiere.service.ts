@@ -1,10 +1,10 @@
-import type { Matiere } from "@/types"
+import type { Matiere, MatiereResponse } from "@/types"
 import apiClient from "./axios.config"
 
 class MatiereService {
     // Récuperer les matieres
-    async getMatieres(): Promise<Matiere[]> {
-        const { data } = await apiClient.get<Matiere[]>('/matieres/')
+    async getMatieres(): Promise<MatiereResponse> {
+        const { data } = await apiClient.get<MatiereResponse>('/matieres/')
         return data
     }
 
