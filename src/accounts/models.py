@@ -214,6 +214,8 @@ class Eleve(models.Model):
         indexes = [
             models.Index(fields=['statut']),
             models.Index(fields=['classe']),
+
+            
             models.Index(fields=['-points_xp']),
         ]
 

@@ -1,9 +1,5 @@
 from django.db import models
-from urllib3.util import Url
 
-
-
-from accounts.models import Eleve
 
 
 # Create your models here.
@@ -119,16 +115,19 @@ class Matiere(models.Model):
             return f"{self.nom_matiere}"
 
 class Cours(models.Model):
-    numero = models.IntegerField()
-    titre = models.CharField()
-    description = models.TextField()
-    dure_totale = models.IntegerField(null=True)
+    numero = models.PositiveIntegerField()
+    titre = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    objectif_pedagogique = models.TextField(blank=True)
+    duree_totale = models.PositiveIntegerField(null=True, blank=True)  # minutes
+    est_verrouille = models.BooleanField(default=False)
+    est_publie = models.BooleanField(default=True)
     date_creation = models.DateTimeField(auto_now_add=True)
     date_modification = models.DateTimeField(auto_now=True)
 
-    #Pour les foreigns
-    matiere = models.ForeignKey(Matiere, on_delete=models.CASCADE)
-    clsse = models.ForeignKey(Classe, on_delete=models.CASCADE)
+    # Foreign keys
+    matiere = models.ForeignKey(Matiere, on_delete=models.CASCADE, related_name="cours")
+    classe = models.ForeignKey(Classe, on_delete=models.CASCADE, related_name="cours")
 
     class Meta:
         db_table = 'cours'
@@ -140,13 +139,13 @@ class Cours(models.Model):
         return f"{self.titre} - {self.numero}"
 
 class Chapitre(models.Model):
-    titre = models.CharField()
-    description = models.TextField()
-    numero = models.IntegerField()
+    titre = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    numero = models.PositiveIntegerField()
     date_creation = models.DateTimeField(auto_now_add=True)
     date_modification = models.DateTimeField(auto_now=True)
 
-    cours = models.ForeignKey(Cours, on_delete=models.CASCADE)
+    cours = models.ForeignKey(Cours, on_delete=models.CASCADE, related_name="chapitres")
 
     class Meta:
         db_table = 'chapitre'
@@ -164,39 +163,55 @@ class Ressource(models.Model):
 
     ]
 
-    titre = models.CharField()
-    type_ressource = models.Choices(TYPE_RESSOURCE)
-    url_video = models.URLField(null=True)
-    fichier =  models.FileField(null=True)
-    duree = models.IntegerField(null=True)
+    
+    type_ressource = models.CharField(max_length=20, choices=TYPE_RESSOURCE)
+    url_video = models.URLField(null=True, blank=True)
+    fichier = models.FileField(upload_to="ressources/", null=True, blank=True)
+    duree = models.PositiveIntegerField(null=True, blank=True)  # minute
+   
     created_at = models.DateTimeField(auto_now_add=True)
-    update_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-    chapitre = models.ForeignKey(Chapitre, on_delete=models.CASCADE)
+    chapitre = models.ForeignKey(Chapitre, on_delete=models.CASCADE, related_name="ressources")
+
+    class Meta:
+        db_table = "ressource"
+        ordering = ["id"]
 
 class ProgressionEleve(models.Model):
-    pourcentage_progression = models.IntegerField(default=0)
+    pourcentage_progression = models.PositiveIntegerField(default=0)
     est_termine = models.BooleanField(default=False)
     date_debut = models.DateTimeField(auto_now_add=True)
-    date_fin = models.DateTimeField(auto_now=True)
+    date_fin = models.DateTimeField(null=True, blank=True)
     derniere_activite = models.DateTimeField(auto_now=True)
-    temps_totale_passe = models.IntegerField(default=0)
+    temps_total_passe = models.PositiveIntegerField(default=0)  # minutes
 
-    eleve = models.ForeignKey(Eleve, on_delete=models.CASCADE)
-    cours = models.ForeignKey(Cours, on_delete=models.CASCADE)
+    # Use string references to avoid circular imports with accounts app
+    eleve = models.ForeignKey("accounts.Eleve", on_delete=models.CASCADE, related_name="progressions")
+    cours = models.ForeignKey(Cours, on_delete=models.CASCADE, related_name="progressions")
+
+    class Meta:
+        db_table = "progression_eleve"
+        constraints = [
+            models.UniqueConstraint(fields=["eleve", "cours"], name="unique_progression_eleve_cours"),
+        ]
 
 class Quiz(models.Model):
-    titre = models.CharField()
-    description = models.TextField()
-    point_max = models.IntegerField(default=0)
+    titre = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    points_max = models.PositiveIntegerField(default=20)
     created_at = models.DateTimeField(auto_now_add=True)
-    duree_estime = models.IntegerField(default=0)
-    fichier = models.FileField(null=True)
+    duree_estimee = models.PositiveIntegerField(default=0)  # minutes
+    fichier = models.FileField(upload_to="quiz/", null=True, blank=True)
 
 
     #Foreignkey
-    chapitre = models.ForeignKey(Chapitre, on_delete=models.CASCADE)
-    cours = models.ForeignKey(Cours, on_delete=models.CASCADE)
+    cours = models.ForeignKey(Cours, on_delete=models.CASCADE, related_name="quiz")
+    chapitre = models.ForeignKey(Chapitre, on_delete=models.CASCADE, null=True, blank=True, related_name="quiz")
+
+    class Meta:
+        db_table = "quiz"
+        ordering = ["-created_at"]
 
 
 
@@ -206,12 +221,16 @@ class TentativeQuiz(models.Model):
     date_tentative = models.DateTimeField(auto_now_add=True)
     note = models.DecimalField(max_digits=5, decimal_places=2)
     reponses = models.JSONField(null=True)
-    estTermine = models.BooleanField(default=False)
-    temps_totale_passe = models.IntegerField(default=0)
+    est_termine = models.BooleanField(default=False)
+    temps_total_passe = models.PositiveIntegerField(default=0)  # minutes
     commentaire = models.TextField(null=True)
 
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-    eleve = models.ForeignKey(Eleve, on_delete=models.CASCADE)
+    eleve = models.ForeignKey("accounts.Eleve", on_delete=models.CASCADE, related_name="tentatives_quiz")
+
+    class Meta:
+        db_table = "tentative_quiz"
+        ordering = ["-date_tentative"]
 
 
 

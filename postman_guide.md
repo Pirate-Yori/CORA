@@ -709,6 +709,643 @@ if (pm.response.code === 201 || pm.response.code === 200) {
 
 ---
 
+---
+
+## 📚 Endpoints de Contenu Pédagogique (Nouvelles APIs)
+
+### 13. Cours - Liste et création
+
+**Endpoint**: `GET /api/courses/` ou `POST /api/courses/`
+
+**Permissions**: Aucune (AllowAny) - **Note**: Le filtrage par classe sera implémenté prochainement
+
+#### GET - Liste des cours
+
+**Headers**: Aucun requis
+
+**Query Parameters** (optionnels):
+- `matiere={id}` - Filtrer par matière
+- `classe={id}` - Filtrer par classe
+- `page={number}` - Numéro de page (pagination)
+
+**Exemple**:
+```
+GET http://localhost:8000/api/courses/?matiere=1
+```
+
+**Réponse réussie (200)**:
+```json
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "numero": 1,
+      "titre": "Introduction aux fonctions",
+      "description": "Ce cours couvre les bases des fonctions mathématiques",
+      "objectif_pedagogique": "Comprendre les concepts fondamentaux des fonctions",
+      "duree_totale": 120,
+      "est_verrouille": false,
+      "est_publie": true,
+      "date_creation": "2026-01-29T00:20:00Z",
+      "date_modification": "2026-01-29T00:20:00Z",
+      "matiere": 1,
+      "classe": 2,
+      "chapitres": [
+        {
+          "id": 1,
+          "titre": "Définition d'une fonction",
+          "description": "Les bases",
+          "numero": 1,
+          "date_creation": "2026-01-29T00:26:11Z",
+          "date_modification": "2026-01-29T00:26:11Z",
+          "cours": 1,
+          "ressources": [
+            {
+              "id": 1,
+              "type_ressource": "video",
+              "url_video": "https://youtube.com/watch?v=...",
+              "fichier": null,
+              "duree": 30,
+              "created_at": "2026-01-29T00:30:00Z",
+              "updated_at": "2026-01-29T00:30:00Z",
+              "chapitre": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Note importante** : 
+- Les cours incluent automatiquement leurs chapitres (avec leurs ressources)
+- La structure est imbriquée : Cours → Chapitres → Ressources
+
+#### POST - Créer un cours
+
+**Headers**: 
+```
+Content-Type: application/json
+```
+
+**Body (JSON)**:
+```json
+{
+  "numero": 1,
+  "titre": "Introduction aux fonctions",
+  "description": "Ce cours couvre les bases des fonctions mathématiques",
+  "objectif_pedagogique": "Comprendre les concepts fondamentaux des fonctions",
+  "duree_totale": 120,
+  "est_verrouille": false,
+  "est_publie": true,
+  "matiere": 1,
+  "classe": 2
+}
+```
+
+**Champs requis**:
+- `numero` : Numéro d'ordre du cours (integer)
+- `titre` : Titre du cours (string, max 255 caractères)
+- `matiere` : ID de la matière (integer, ForeignKey)
+- `classe` : ID de la classe (integer, ForeignKey)
+
+**Champs optionnels**:
+- `description` : Description du cours (text)
+- `objectif_pedagogique` : Objectif pédagogique (text)
+- `duree_totale` : Durée totale en minutes (integer)
+- `est_verrouille` : Si le cours est verrouillé (boolean, default: false)
+- `est_publie` : Si le cours est publié (boolean, default: true)
+
+**Réponse réussie (201)**:
+```json
+{
+  "id": 1,
+  "numero": 1,
+  "titre": "Introduction aux fonctions",
+  "description": "Ce cours couvre les bases des fonctions mathématiques",
+  "objectif_pedagogique": "Comprendre les concepts fondamentaux des fonctions",
+  "duree_totale": 120,
+  "est_verrouille": false,
+  "est_publie": true,
+  "date_creation": "2026-01-29T00:20:00Z",
+  "date_modification": "2026-01-29T00:20:00Z",
+  "matiere": 1,
+  "classe": 2,
+  "chapitres": []
+}
+```
+
+---
+
+### 14. Cours - Détail, modification, suppression
+
+**Endpoint**: 
+- `GET /api/courses/{id}/` - Détail d'un cours (avec chapitres et ressources)
+- `PUT /api/courses/{id}/` - Modification complète
+- `PATCH /api/courses/{id}/` - Modification partielle
+- `DELETE /api/courses/{id}/` - Suppression
+
+**Permissions**: Aucune (AllowAny)
+
+**Exemple GET**:
+```
+GET http://localhost:8000/api/courses/1/
+```
+
+**Réponse (200)**:
+```json
+{
+  "id": 1,
+  "numero": 1,
+  "titre": "Introduction aux fonctions",
+  "description": "Ce cours couvre les bases des fonctions mathématiques",
+  "objectif_pedagogique": "Comprendre les concepts fondamentaux des fonctions",
+  "duree_totale": 120,
+  "est_verrouille": false,
+  "est_publie": true,
+  "date_creation": "2026-01-29T00:20:00Z",
+  "date_modification": "2026-01-29T00:20:00Z",
+  "matiere": 1,
+  "classe": 2,
+  "chapitres": [
+    {
+      "id": 1,
+      "titre": "Définition d'une fonction",
+      "description": "Les bases",
+      "numero": 1,
+      "date_creation": "2026-01-29T00:26:11Z",
+      "date_modification": "2026-01-29T00:26:11Z",
+      "cours": 1,
+      "ressources": [
+        {
+          "id": 1,
+          "type_ressource": "video",
+          "url_video": "https://youtube.com/watch?v=...",
+          "fichier": null,
+          "duree": 30,
+          "created_at": "2026-01-29T00:30:00Z",
+          "updated_at": "2026-01-29T00:30:00Z",
+          "chapitre": 1
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+### 15. Chapitres - Liste et création
+
+**Endpoint**: `GET /api/chapitres/` ou `POST /api/chapitres/`
+
+**Permissions**: Aucune (AllowAny)
+
+#### GET - Liste des chapitres
+
+**Query Parameters** (optionnels):
+- `cours={id}` - Filtrer par cours
+- `page={number}` - Numéro de page
+
+**Exemple**:
+```
+GET http://localhost:8000/api/chapitres/?cours=1
+```
+
+**Réponse réussie (200)**:
+```json
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "titre": "les bases",
+      "description": "ce sont les bases des probabilites",
+      "numero": 1,
+      "date_creation": "2026-01-29T00:26:11.985571Z",
+      "date_modification": "2026-01-29T00:26:11.985587Z",
+      "cours": 1,
+      "ressources": [
+        {
+          "id": 1,
+          "type_ressource": "video",
+          "url_video": "https://youtube.com/watch?v=...",
+          "fichier": null,
+          "duree": 30,
+          "created_at": "2026-01-29T00:30:00Z",
+          "updated_at": "2026-01-29T00:30:00Z",
+          "chapitre": 1
+        },
+        {
+          "id": 2,
+          "type_ressource": "document",
+          "url_video": null,
+          "fichier": "/media/ressources/cours1.pdf",
+          "duree": null,
+          "created_at": "2026-01-29T00:35:00Z",
+          "updated_at": "2026-01-29T00:35:00Z",
+          "chapitre": 1
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Note importante** : 
+- Les chapitres incluent automatiquement leurs ressources dans la réponse
+- Chaque ressource peut être une vidéo (url_video) ou un document (fichier)
+
+#### POST - Créer un chapitre
+
+**Headers**: 
+```
+Content-Type: application/json
+```
+
+**Body (JSON)**:
+```json
+{
+  "titre": "Définition d'une fonction",
+  "description": "Les bases des fonctions",
+  "numero": 1,
+  "cours": 1
+}
+```
+
+**Champs requis**:
+- `titre` : Titre du chapitre (string, max 255 caractères)
+- `numero` : Numéro d'ordre du chapitre (integer)
+- `cours` : ID du cours (integer, ForeignKey)
+
+**Champs optionnels**:
+- `description` : Description du chapitre (text)
+
+**Réponse réussie (201)**:
+```json
+{
+  "id": 1,
+  "titre": "Définition d'une fonction",
+  "description": "Les bases des fonctions",
+  "numero": 1,
+  "date_creation": "2026-01-29T00:26:11Z",
+  "date_modification": "2026-01-29T00:26:11Z",
+  "cours": 1,
+  "ressources": []
+}
+```
+
+---
+
+### 16. Chapitres - Détail, modification, suppression
+
+**Endpoint**: 
+- `GET /api/chapitres/{id}/` - Détail d'un chapitre (avec ses ressources)
+- `PUT /api/chapitres/{id}/` - Modification complète
+- `PATCH /api/chapitres/{id}/` - Modification partielle
+- `DELETE /api/chapitres/{id}/` - Suppression
+
+**Permissions**: Aucune (AllowAny)
+
+**Exemple GET**:
+```
+GET http://localhost:8000/api/chapitres/1/
+```
+
+**Réponse (200)**:
+```json
+{
+  "id": 1,
+  "titre": "les bases",
+  "description": "ce sont les bases des probabilites",
+  "numero": 1,
+  "date_creation": "2026-01-29T00:26:11.985571Z",
+  "date_modification": "2026-01-29T00:26:11.985587Z",
+  "cours": 1,
+  "ressources": [
+    {
+      "id": 1,
+      "type_ressource": "video",
+      "url_video": "https://youtube.com/watch?v=...",
+      "fichier": null,
+      "duree": 30,
+      "created_at": "2026-01-29T00:30:00Z",
+      "updated_at": "2026-01-29T00:30:00Z",
+      "chapitre": 1
+    }
+  ]
+}
+```
+
+---
+
+### 17. Ressources - Liste et création
+
+**Endpoint**: `GET /api/ressources/` ou `POST /api/ressources/`
+
+**Permissions**: Aucune (AllowAny)
+
+#### GET - Liste des ressources
+
+**Query Parameters** (optionnels):
+- `chapitre={id}` - Filtrer par chapitre
+- `type_ressource={type}` - Filtrer par type (video, audio, document)
+- `page={number}` - Numéro de page
+
+**Exemple**:
+```
+GET http://localhost:8000/api/ressources/?chapitre=1&type_ressource=video
+```
+
+**Réponse réussie (200)**:
+```json
+{
+  "count": 3,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "type_ressource": "video",
+      "url_video": "https://youtube.com/watch?v=abc123",
+      "fichier": null,
+      "duree": 30,
+      "created_at": "2026-01-29T00:30:00Z",
+      "updated_at": "2026-01-29T00:30:00Z",
+      "chapitre": 1
+    },
+    {
+      "id": 2,
+      "type_ressource": "document",
+      "url_video": null,
+      "fichier": "/media/ressources/cours1.pdf",
+      "duree": null,
+      "created_at": "2026-01-29T00:35:00Z",
+      "updated_at": "2026-01-29T00:35:00Z",
+      "chapitre": 1
+    }
+  ]
+}
+```
+
+#### POST - Créer une ressource
+
+**Headers**: 
+```
+Content-Type: multipart/form-data
+```
+
+**Body (form-data)**:
+- `chapitre` : ID du chapitre (integer, requis)
+- `type_ressource` : Type de ressource (string, requis) - Options: `"video"`, `"audio"`, `"document"`
+- `url_video` : URL de la vidéo (string, optionnel) - Requis si type_ressource = "video"
+- `fichier` : Fichier à uploader (file, optionnel) - Requis si type_ressource = "document" ou "audio"
+- `duree` : Durée en minutes (integer, optionnel)
+
+**Exemple pour une vidéo**:
+```
+chapitre: 1
+type_ressource: video
+url_video: https://youtube.com/watch?v=abc123
+duree: 30
+```
+
+**Exemple pour un document**:
+```
+chapitre: 1
+type_ressource: document
+fichier: [Sélectionner un fichier PDF]
+duree: null
+```
+
+**Réponse réussie (201)**:
+```json
+{
+  "id": 1,
+  "type_ressource": "video",
+  "url_video": "https://youtube.com/watch?v=abc123",
+  "fichier": null,
+  "duree": 30,
+  "created_at": "2026-01-29T00:30:00Z",
+  "updated_at": "2026-01-29T00:30:00Z",
+  "chapitre": 1
+}
+```
+
+**Note importante** :
+- Pour les vidéos : utilisez `url_video` (YouTube, Vimeo, etc.)
+- Pour les documents/audio : utilisez `fichier` (upload de fichier)
+- Les fichiers sont stockés dans `/media/ressources/`
+
+---
+
+### 18. Ressources - Détail, modification, suppression
+
+**Endpoint**: 
+- `GET /api/ressources/{id}/` - Détail d'une ressource
+- `PUT /api/ressources/{id}/` - Modification complète
+- `PATCH /api/ressources/{id}/` - Modification partielle
+- `DELETE /api/ressources/{id}/` - Suppression
+
+**Permissions**: Aucune (AllowAny)
+
+**Exemple GET**:
+```
+GET http://localhost:8000/api/ressources/1/
+```
+
+**Réponse (200)**:
+```json
+{
+  "id": 1,
+  "type_ressource": "video",
+  "url_video": "https://youtube.com/watch?v=abc123",
+  "fichier": null,
+  "duree": 30,
+  "created_at": "2026-01-29T00:30:00Z",
+  "updated_at": "2026-01-29T00:30:00Z",
+  "chapitre": 1
+}
+```
+
+---
+
+### 19. Quiz - Liste et création
+
+**Endpoint**: `GET /api/quiz/` ou `POST /api/quiz/`
+
+**Permissions**:
+- **GET**: Authentifié requis
+- **POST**: Admin uniquement
+
+#### GET - Liste des quiz
+
+**Headers**:
+```
+Authorization: Bearer <access_token>
+```
+
+**Query Parameters** (optionnels):
+- `cours={id}` - Filtrer par cours
+- `chapitre={id}` - Filtrer par chapitre
+
+**Exemple**:
+```
+GET http://localhost:8000/api/quiz/?cours=1
+```
+
+#### POST - Créer un quiz (admin)
+
+**Headers**:
+```
+Authorization: Bearer <access_token>
+Content-Type: multipart/form-data
+```
+
+**Body (form-data)**:
+- `titre` (string, requis)
+- `description` (string, optionnel)
+- `points_max` (int, optionnel, default 20)
+- `duree_estimee` (int minutes, optionnel)
+- `cours` (int, requis)
+- `chapitre` (int, optionnel)
+- `fichier` (File, optionnel)
+
+---
+
+### 20. Quiz - Détail, modification, suppression
+
+**Endpoint**:
+- `GET /api/quiz/{id}/` - Auth requis
+- `PUT/PATCH/DELETE /api/quiz/{id}/` - Admin uniquement
+
+---
+
+### 21. Tentatives Quiz - Liste et passage de quiz
+
+**Endpoint**: `GET /api/tentatives-quiz/` ou `POST /api/tentatives-quiz/`
+
+**Permissions**:
+- **Élève**: voit uniquement ses tentatives + peut créer une tentative
+- **Admin**: voit toutes les tentatives + peut corriger
+
+#### POST - Passer un quiz (élève)
+
+**Headers**:
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+**Body (JSON)**:
+```json
+{
+  "quiz": 1,
+  "reponses": { "Q1": "B", "Q2": "A" },
+  "temps_total_passe": 25,
+  "est_termine": true
+}
+```
+
+**Note importante**:
+- Le champ `eleve` est **forcé côté backend** (l’élève connecté).
+- Un élève ne peut passer que les quiz de **sa classe** (via `quiz.cours.classe`).
+
+#### PATCH - Corriger une tentative (admin)
+
+**Endpoint**: `PATCH /api/tentatives-quiz/{id}/`
+
+**Body (JSON)**:
+```json
+{
+  "note": 15.5,
+  "commentaire": "Bien"
+}
+```
+
+---
+
+## 📝 Notes importantes sur les nouvelles APIs
+
+1. **Structure hiérarchique** :
+   - **Cours** → contient plusieurs **Chapitres**
+   - **Chapitre** → contient plusieurs **Ressources**
+   - Les réponses JSON incluent automatiquement les relations imbriquées
+
+2. **Filtrage par classe** :
+   - Actuellement, tous les endpoints sont accessibles sans filtrage
+   - Le filtrage automatique par classe de l'élève sera implémenté prochainement
+   - Pour l'instant, utilisez le paramètre `?classe={id}` pour filtrer manuellement
+
+3. **Types de ressources** :
+   - `"video"` : Utilisez `url_video` pour les liens YouTube/Vimeo
+   - `"audio"` : Utilisez `fichier` pour uploader un fichier audio
+   - `"document"` : Utilisez `fichier` pour uploader un PDF/DOCX
+
+4. **Pagination** :
+   - Tous les endpoints de liste retournent 20 résultats par page par défaut
+   - Utilisez `?page={number}` pour naviguer entre les pages
+
+5. **Relations** :
+   - Un cours appartient à une **matière** et une **classe**
+   - Un chapitre appartient à un **cours**
+   - Une ressource appartient à un **chapitre**
+   - Les IDs des relations sont inclus dans les réponses JSON
+
+---
+
+## 🚀 Exemple de workflow avec les nouvelles APIs
+
+1. **Créer un cours** → `POST /api/courses/`
+   ```json
+   {
+     "numero": 1,
+     "titre": "Introduction aux fonctions",
+     "description": "Cours sur les fonctions",
+     "matiere": 1,
+     "classe": 2
+   }
+   ```
+   - Notez l'ID du cours créé (ex: `id: 1`)
+
+2. **Créer un chapitre** → `POST /api/chapitres/`
+   ```json
+   {
+     "titre": "Définition d'une fonction",
+     "description": "Les bases",
+     "numero": 1,
+     "cours": 1
+   }
+   ```
+   - Notez l'ID du chapitre créé (ex: `id: 1`)
+
+3. **Ajouter une ressource vidéo** → `POST /api/ressources/`
+   - Body (form-data):
+     - `chapitre`: 1
+     - `type_ressource`: video
+     - `url_video`: https://youtube.com/watch?v=abc123
+     - `duree`: 30
+
+4. **Ajouter une ressource document** → `POST /api/ressources/`
+   - Body (form-data):
+     - `chapitre`: 1
+     - `type_ressource`: document
+     - `fichier`: [Sélectionner un PDF]
+
+5. **Récupérer le cours complet** → `GET /api/courses/1/`
+   - La réponse inclut automatiquement tous les chapitres et leurs ressources
+
+6. **Récupérer un chapitre avec ses ressources** → `GET /api/chapitres/1/`
+   - La réponse inclut automatiquement toutes les ressources du chapitre
+
+---
+
 ## 📞 Support
 
 Pour toute question ou problème, contactez l'équipe backend.
