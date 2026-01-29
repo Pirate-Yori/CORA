@@ -14,9 +14,20 @@ class ClasseViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ClasseSerializer
 
 class MatiereViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.AllowAny, )
+    permission_classes = (permissions.AllowAny,)
     queryset = Matiere.objects.all()
     serializer_class = serializers.MatiereSerializer
+
+    def get_queryset(self):
+        qs = Matiere.objects.prefetch_related("classes_matieres")
+        
+        if self.request.user.is_authenticated and getattr(self.request.user, "role", None) == "eleve":
+            try:
+                classe = self.request.user.profil_eleve.classe
+                return qs.filter(classes_matieres=classe)
+            except Exception:
+                return qs.none()
+        return qs
 
 
 class CourseViewSet(viewsets.ModelViewSet):

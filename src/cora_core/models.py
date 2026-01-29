@@ -100,6 +100,16 @@ class Matiere(models.Model):
             verbose_name="Nom de la matière",
             default=MATH
         )
+        icon = models.ImageField(blank=True, null=True, upload_to='matiere_icon')
+        image = models.ImageField(blank=True, null=True, upload_to='matiere_img')
+        statusColor = models.CharField(max_length=20, default='blue')
+        status = models.CharField(max_length=20, default='active')
+        colorBg = models.CharField(max_length=20, default='bg-blue-500')
+        progression = models.FloatField(default=0.0)
+        progressColor = models.CharField(max_length=20, default='blue')
+        prochainCours = models.CharField(max_length=20, default='', blank=True)
+
+
 
         classes_matieres = models.ManyToManyField(Classe, verbose_name="CLASSE_MATIERES")
 
