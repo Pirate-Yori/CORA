@@ -10,12 +10,12 @@
       <!-- Logo -->
       <div class="h-16 flex items-center justify-between px-6 border-b border-gray-200">
         <router-link to="/dashboard" class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
+          <div class="w-10 h-10 bg-linear-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
           </div>
-          <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <span class="text-xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
             Cora
           </span>
         </router-link>
@@ -225,15 +225,15 @@
       <!-- User Profile -->
       <div class="p-4 border-t border-gray-200">
         <div class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer">
-          <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold">
-            JD
+          <div class="w-10 h-10 bg-linear-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold">
+            {{ user?.photo_profil }}
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-semibold text-gray-800 truncate">Jean Dupont</p>
-            <p class="text-xs text-gray-500 truncate">3ème A</p>
+            <p class="text-sm font-semibold text-gray-800 truncate">{{userFullName}}</p>
+            <p class="text-xs text-gray-500 truncate">{{user?.classe}}</p>
           </div>
           <button 
-            @click="logout"
+            @click="handlelogout"
             class="p-2 text-gray-400 hover:text-red-600 transition-colors"
             title="Déconnexion"
           >
@@ -266,12 +266,12 @@
         </button>
 
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+          <div class="w-8 h-8 bg-linear-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
           </div>
-          <span class="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <span class="text-lg font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
             Cora
           </span>
         </div>
@@ -292,20 +292,22 @@
 </template>
 
 <script setup lang="ts">
+import { useAuth } from '@/composables';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const sidebarOpen = ref(false);
+const {user,userFullName,logout,token} = useAuth()
 
 const navigateTo = (path: string) => {
   router.push(path);
   sidebarOpen.value = false; // Fermer le sidebar sur mobile après navigation
 };
 
-const logout = () => {
-  // Logique de déconnexion
-  localStorage.removeItem('token');
-  router.push('/auth/login');
-};
+const handlelogout = async ()=>{
+  await logout(String(token))
+  router.push('/auth/login')
+}
+
 </script>

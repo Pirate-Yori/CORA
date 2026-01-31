@@ -1,0 +1,2 @@
+la reponse de la doc ne correspond pas à la realité : pas de resul [] au retours coures.
+Essaie de charger les données avec leur relation sans envoyer les clé primaire

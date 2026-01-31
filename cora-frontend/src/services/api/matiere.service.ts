@@ -13,5 +13,11 @@ class MatiereService {
         const { data } = await apiClient.get<Matiere>(`/matieres/${matiereId}/`)
         return data
     }
+
+    //Recuperer les cours d'une matiere
+    async getCoursByMatiereId(matiereId: number):Promise<any> {
+        const { data } = await apiClient.get(`/courses/${matiereId}/`)
+        return data
+    }
 }
 export default new MatiereService()

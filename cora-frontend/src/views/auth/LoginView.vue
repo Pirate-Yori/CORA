@@ -3,7 +3,7 @@ import LoginForm from '@/components/auth/LoginForm.vue';
 import { useRouter } from 'vue-router';
 const router = useRouter()
 const handleLogin = ()=>{
-    return router.push({name:'Home'})
+    return router.push({name:'Dashboard'})
 }
 const register = ()=>{
     return router.push({name:"Register"})

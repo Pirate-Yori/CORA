@@ -358,11 +358,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useMatiereStore } from '@/stores/matiere.store';
+import { ref, computed,onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const tabActif = ref('cours');
+const matiereStore = useMatiereStore();
+// const matiere = matiereStore.matieres
+const coursList = computed(()=>matiereStore.coursList)
+const route = useRoute()
 
+const matiereId = route.params.matiereId
+
+onMounted(async()=>{
+  try{
+    matiereStore.fecthMatierCours(matiereId)
+  } catch (error) {
+    console.error('Erreur lors de la récupération des matières :', error);
+  }
+})
 // Données de la matière
 const matiere = ref({
   nom: 'Mathématiques',
@@ -397,64 +411,64 @@ const progression = computed(() =>
 const router = useRouter()
 
 // Liste des cours
-const coursList = ref([
-  {
-    id: 1,
-    titre: 'Algèbre et équations',
-    description: 'Découvrez les fondamentaux de l\'algèbre : équations, inéquations, systèmes et expressions algébriques. Développez votre capacité à résoudre des problèmes complexes.',
-    icon: '🔢',
-    chapitres: 8,
-    duree: '6h 30min',
-    exercices: 42,
-    niveau: 'Débutant',
-    completed: true,
-    enCours: false,
-    verrouille: false,
-    progression: 100
-  },
-  {
-    id: 2,
-    titre: 'Géométrie plane et dans l\'espace',
-    description: 'Explorez les figures géométriques, les théorèmes fondamentaux (Pythagore, Thalès) et les transformations. Apprenez à calculer aires, volumes et angles.',
-    icon: '📐',
-    chapitres: 6,
-    duree: '5h 45min',
-    exercices: 38,
-    niveau: 'Intermédiaire',
-    completed: false,
-    enCours: true,
-    verrouille: false,
-    progression: 45
-  },
-  {
-    id: 3,
-    titre: 'Fonctions et graphiques',
-    description: 'Maîtrisez les fonctions linéaires, affines et du second degré. Apprenez à les représenter graphiquement et à analyser leurs propriétés.',
-    icon: '📊',
-    chapitres: 7,
-    duree: '7h 15min',
-    exercices: 45,
-    niveau: 'Intermédiaire',
-    completed: false,
-    enCours: false,
-    verrouille: false,
-    progression: 0
-  },
-  {
-    id: 4,
-    titre: 'Statistiques et probabilités',
-    description: 'Apprenez à collecter, organiser et interpréter des données. Découvrez les concepts de base des probabilités et leurs applications pratiques.',
-    icon: '📈',
-    chapitres: 5,
-    duree: '4h 30min',
-    exercices: 31,
-    niveau: 'Débutant',
-    completed: false,
-    enCours: false,
-    verrouille: true,
-    progression: 0
-  }
-]);
+// const coursList = ref([
+//   {
+//     id: 1,
+//     titre: 'Algèbre et équations',
+//     description: 'Découvrez les fondamentaux de l\'algèbre : équations, inéquations, systèmes et expressions algébriques. Développez votre capacité à résoudre des problèmes complexes.',
+//     icon: '🔢',
+//     chapitres: 8,
+//     duree: '6h 30min',
+//     exercices: 42,
+//     niveau: 'Débutant',
+//     completed: true,
+//     enCours: false,
+//     verrouille: false,
+//     progression: 100
+//   },
+//   {
+//     id: 2,
+//     titre: 'Géométrie plane et dans l\'espace',
+//     description: 'Explorez les figures géométriques, les théorèmes fondamentaux (Pythagore, Thalès) et les transformations. Apprenez à calculer aires, volumes et angles.',
+//     icon: '📐',
+//     chapitres: 6,
+//     duree: '5h 45min',
+//     exercices: 38,
+//     niveau: 'Intermédiaire',
+//     completed: false,
+//     enCours: true,
+//     verrouille: false,
+//     progression: 45
+//   },
+//   {
+//     id: 3,
+//     titre: 'Fonctions et graphiques',
+//     description: 'Maîtrisez les fonctions linéaires, affines et du second degré. Apprenez à les représenter graphiquement et à analyser leurs propriétés.',
+//     icon: '📊',
+//     chapitres: 7,
+//     duree: '7h 15min',
+//     exercices: 45,
+//     niveau: 'Intermédiaire',
+//     completed: false,
+//     enCours: false,
+//     verrouille: false,
+//     progression: 0
+//   },
+//   {
+//     id: 4,
+//     titre: 'Statistiques et probabilités',
+//     description: 'Apprenez à collecter, organiser et interpréter des données. Découvrez les concepts de base des probabilités et leurs applications pratiques.',
+//     icon: '📈',
+//     chapitres: 5,
+//     duree: '4h 30min',
+//     exercices: 31,
+//     niveau: 'Débutant',
+//     completed: false,
+//     enCours: false,
+//     verrouille: true,
+//     progression: 0
+//   }
+// ]);
 
 const naviguerVersCours = (coursId: number) => {
   const cours = coursList.value.find(c => c.id === coursId);

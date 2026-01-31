@@ -9,6 +9,7 @@ export const useMatiereStore = defineStore("matiere", () => {
     const isLoading = ref(false);
     const error = ref<string | null>(null);
     const coursActif = ref<Cours | null>(null)
+    const coursList = ref<Cours[]>([])
 
     const setMatieres = (matiereList: Matiere[]) => {
         matieres.value = matiereList;
@@ -33,14 +34,31 @@ export const useMatiereStore = defineStore("matiere", () => {
         }
     }
 
+    const fecthMatierCours = async (matierId:number) =>{
+        isLoading.value = true;
+        error.value = null;
+
+        try {
+            const respones = await matiereService.getCoursByMatiereId(matierId);
+            coursList.value = respones.results
+         } catch (error) {
+            console.error("Erreur lors de la récupération des matières:", error);
+            throw error;
+          } finally {
+            isLoading.value = false;
+        }
+    }
+
     return{
         matieres,
         selectedMatiere,
         isLoading,
         error,
         coursActif,
+        coursList,
         setMatieres,
         setSelectedMatiere,
-        fetchMatieres
+        fetchMatieres,
+        fecthMatierCours
     }
 })

@@ -11,8 +11,9 @@ export function useAuth() {
     const user = computed(() => authStore.user)
     const isAuthenticated = computed(() => authStore.isAuthenticated)
     const isLoading = computed(() => authStore.isLoading)
-    const userFullName = computed(() => authStore.user?.full_name || "")
+    const userFullName = computed(() => authStore.user?.nom + " "+ authStore.user?.prenom || "")
     const userEmail = computed(() => authStore.user?.email || "")
+    const token = computed(()=>authStore.refreshToken)
 
     // Methode
     const login = authStore.login
@@ -24,6 +25,7 @@ export function useAuth() {
         user, 
         isAuthenticated, 
         isLoading,
+        token,
         
         //User info
         userFullName, 

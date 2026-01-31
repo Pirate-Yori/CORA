@@ -257,7 +257,7 @@ const pricing = [
     name: "Mensuel",
     price: "15 000",
     period: "/mois",
-    popular: false,
+    popular: false, 
     features: [
       "Accès à tous les cours",
       "Exercices corrigés",
