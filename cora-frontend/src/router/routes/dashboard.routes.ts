@@ -1,4 +1,5 @@
 import DashboardLayout from "@/layouts/DashboardLayout.vue";
+import ProfileView from "@/views/auth/ProfileView.vue";
 import LandingView from "@/views/dasboard/LandingView.vue";
 import Dashboard from "@/views/Dashboard.vue";
 import CoursChapitres from "@/views/matieres/CoursChapitres.vue";
@@ -16,15 +17,37 @@ const dashboardRoutes: RouteRecordRaw[] = [
         },
         children: [
             {
+                path: "home",
+                name: "Home",
+                component: () => import("@/views/home/DashboardView.vue"),
+                meta: {
+                    title: "Accueil",
+                    requiresAuth:false,
+                    redirectIfAuth:true
+                }
+            },
+            {
                 path: "dashboard",
                 name: "Dashboard",
                 component: () => Dashboard,
                 meta: {
-                    title: "Dashboard"
+                    title: "Dashboard",
+                    requiresAuth: true
+                }
+            },
+            {
+                path:"profil",
+                name:"Profile",
+                component:()=>ProfileView,
+                meta:{
+                    requiresAuth:true
                 }
             },
             {
                 path: "matieres",
+                meta:{
+                    requiresAuth:true
+                },
                 children: [
                     //Liste des matiere
                     {

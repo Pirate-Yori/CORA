@@ -5,7 +5,8 @@ const authRoutes:RouteRecordRaw[]=[
         path:"/auth",
         component:()=>import("@layouts/AuthLayout.vue"),
         meta:{
-            
+            requiresAuth:false,
+            redirectIfAuth:true
         },children:[
             {
                 path:"register",

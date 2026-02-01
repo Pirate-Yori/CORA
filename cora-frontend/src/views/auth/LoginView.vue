@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import LoginForm from '@/components/auth/LoginForm.vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 const router = useRouter()
+const route = useRoute()
 const handleLogin = ()=>{
-    return router.push({name:'Dashboard'})
+    const redirectTo = route.query.redirectTo as string || '/dasboard'
+    return router.push(redirectTo)
 }
 const register = ()=>{
     return router.push({name:"Register"})

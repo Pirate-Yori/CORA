@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import BreadCrumb from "@/components/common/BreadCrumb.vue";
 import { useMatiereStore } from "@/stores/matiere.store";
+import type { Matiere } from "@/types";
 import { BookText } from "lucide-vue-next";
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
@@ -31,153 +31,22 @@ const stats = ref({
   progressionMoyenne: 68,
 });
 
-// Données des matières
-// const matieres = ref([
-//   {
-//     id: 1,
-//     nom: "Mathématiques",
-//     icon: "📐",
-//     professeur: "M. Martin",
-//     colorBg: "bg-gradient-to-br from-blue-500 to-indigo-600",
-//     progressColor: "bg-blue-600",
-//     totalCours: 4,
-//     dureeTotal: "24h",
-//     exercices: 156,
-//     progression: 85,
-//     prochainCours: "Demain, 9h00",
-//     statusLabel: "En cours",
-//     statusColorBadge: "bg-green-100 text-green-700",
-//     statut: "en-cours",
-//   },
-//   {
-//     id: 2,
-//     nom: "Français",
-//     icon: "📚",
-//     professeur: "Mme Dubois",
-//     colorBg: "bg-gradient-to-br from-purple-500 to-pink-600",
-//     progressColor: "bg-purple-600",
-//     totalCours: 5,
-//     dureeTotal: "20h",
-//     exercices: 128,
-//     progression: 72,
-//     prochainCours: "Lun, 14h00",
-//     statusLabel: "En cours",
-//     statusColorBadge: "bg-green-100 text-green-700",
-//     statut: "en-cours",
-//   },
-//   {
-//     id: 3,
-//     nom: "Anglais",
-//     icon: "🌍",
-//     professeur: "Mr. Smith",
-//     colorBg: "bg-gradient-to-br from-orange-500 to-red-600",
-//     progressColor: "bg-orange-600",
-//     totalCours: 4,
-//     dureeTotal: "18h",
-//     exercices: 98,
-//     progression: 100,
-//     prochainCours: null,
-//     statusLabel: "Terminé",
-//     statusColorBadge: "bg-purple-100 text-purple-700",
-//     statut: "termine",
-//   },
-//   {
-//     id: 4,
-//     nom: "Sciences",
-//     icon: "🔬",
-//     professeur: "Mme Laurent",
-//     colorBg: "bg-gradient-to-br from-green-500 to-emerald-600",
-//     progressColor: "bg-green-600",
-//     totalCours: 6,
-//     dureeTotal: "28h",
-//     exercices: 142,
-//     progression: 65,
-//     prochainCours: "Mar, 15h00",
-//     statusLabel: "En cours",
-//     statusColorBadge: "bg-green-100 text-green-700",
-//     statut: "en-cours",
-//   },
-//   {
-//     id: 5,
-//     nom: "Histoire-Géographie",
-//     icon: "🌎",
-//     professeur: "M. Bernard",
-//     colorBg: "bg-gradient-to-br from-amber-500 to-yellow-600",
-//     progressColor: "bg-amber-600",
-//     totalCours: 5,
-//     dureeTotal: "22h",
-//     exercices: 86,
-//     progression: 58,
-//     prochainCours: "Mer, 10h00",
-//     statusLabel: "En cours",
-//     statusColorBadge: "bg-green-100 text-green-700",
-//     statut: "en-cours",
-//   },
-//   {
-//     id: 6,
-//     nom: "Physique-Chimie",
-//     icon: "⚗️",
-//     professeur: "M. Dupuis",
-//     colorBg: "bg-gradient-to-br from-cyan-500 to-blue-600",
-//     progressColor: "bg-cyan-600",
-//     totalCours: 4,
-//     dureeTotal: "20h",
-//     exercices: 112,
-//     progression: 45,
-//     prochainCours: "Jeu, 14h00",
-//     statusLabel: "En cours",
-//     statusColorBadge: "bg-green-100 text-green-700",
-//     statut: "en-cours",
-//   },
-//   {
-//     id: 7,
-//     nom: "Éducation Physique",
-//     icon: "⚽",
-//     professeur: "M. Moreau",
-//     colorBg: "bg-gradient-to-br from-rose-500 to-pink-600",
-//     progressColor: "bg-rose-600",
-//     totalCours: 3,
-//     dureeTotal: "15h",
-//     exercices: 24,
-//     progression: 100,
-//     prochainCours: null,
-//     statusLabel: "Terminé",
-//     statusColorBadge: "bg-purple-100 text-purple-700",
-//     statut: "termine",
-//   },
-//   {
-//     id: 8,
-//     nom: "Arts Plastiques",
-//     icon: "🎨",
-//     professeur: "Mme Rousseau",
-//     colorBg: "bg-gradient-to-br from-fuchsia-500 to-purple-600",
-//     progressColor: "bg-fuchsia-600",
-//     totalCours: 3,
-//     dureeTotal: "12h",
-//     exercices: 36,
-//     progression: 0,
-//     prochainCours: "Ven, 16h00",
-//     statusLabel: "Non commencé",
-//     statusColorBadge: "bg-gray-100 text-gray-700",
-//     statut: "non-commence",
-//   },
-// ]);
 
 // Matières filtrées
 const matieresFiltered = computed(() => {
   let filtered = matieres.value;
-
+  
   // Filtre par recherche
   if (searchQuery.value) {
     filtered = filtered.filter(
-      (m) =>
-        m.nom.toLowerCase().includes(searchQuery.value.toLowerCase())
+      (m:Matiere) =>
+        m.nom_matiere.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
   }
 
   // Filtre par statut
   if (filtreStatut.value !== "tous") {
-    filtered = filtered.filter((m) => m.status === filtreStatut.value);
+    filtered = filtered.filter((m:Matiere) => m.status === filtreStatut.value);
   }
 
   return filtered;
@@ -195,11 +64,6 @@ const naviguerVersMatiere = (matiereId: number) => {
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-     <header class="bg-white border-b">
-      <div class="max-w-7xl mx-auto">
-        <BreadCrumb />
-      </div>
-     </header>
     <div class="bg-white border-b border-gray-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div

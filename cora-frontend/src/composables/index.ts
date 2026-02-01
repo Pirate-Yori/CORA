@@ -1,2 +1,6 @@
 export { useAuth } from './useAuth'
 export { useForm } from './useForm'
+export { useMatieres } from './useMatiere'
+export { useCours } from './useMatiere'
+export { useChapitres } from './useMatiere'
+export { useMatieresPage } from './useMatiere'

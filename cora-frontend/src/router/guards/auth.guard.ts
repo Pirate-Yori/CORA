@@ -5,6 +5,7 @@ export const authGuard = (to: RouteLocationNormalized, from: RouteLocationNormal
     const authStore = useAuthStore()
     const isAuthenticated = authStore.isAuthenticated
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+    const redirectIfAuth = to.matched.some(record => record.meta.redirectIfAuth)
 
     // Routes publiques ne nécessitant pas d'authentification
     const publicRoutes = ['Login', 'Register']
@@ -15,7 +16,11 @@ export const authGuard = (to: RouteLocationNormalized, from: RouteLocationNormal
             next({name:'Login', query:{redirect: to.fullPath}})
             return
         }
-    }else if(isPublicRoute && isAuthenticated){
+    }
+    else if(redirectIfAuth && isAuthenticated){
+        next({name:"Dashboard"})
+    }
+    else if(isPublicRoute && isAuthenticated){
         next({name:'Home'})
         return
     }

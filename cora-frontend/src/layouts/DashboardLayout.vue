@@ -308,12 +308,23 @@
       <!-- User Profile -->
       <div class="p-4 border-t border-gray-200">
         <div
-          class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
+          class="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 transition-colors cursor-pointer rounded-full"
         >
           <div
             class="w-10 h-10 bg-linear-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold"
           >
-            {{ user?.photo_profil }}
+            <img
+              v-if="user?.photo_profil"
+              :src="user?.photo_profil"
+              alt=""
+              class="w-full rounded-full h-full object-cover"
+            />
+            <div
+              v-else
+              class="w-9 h-9 bg-linear-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white font-semibold text-sm"
+            >
+              {{ user?.prenom.charAt(0) }}{{ user?.nom.charAt(0) }}
+            </div>
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-sm font-semibold text-gray-800 truncate">
@@ -454,7 +465,7 @@ const navigateTo = (path: string) => {
 };
 
 const handlelogout = async () => {
-  await logout(String(token));
+  await logout(String(token.value));
   router.push("/auth/login");
 };
 </script>

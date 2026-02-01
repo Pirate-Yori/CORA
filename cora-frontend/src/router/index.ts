@@ -9,9 +9,13 @@ const routes: RouteRecordRaw[]=[
     {
         path:"/",
         redirect:'/home',
+        meta:{
+            requiresAuth:false,
+            redirectIfAuth:true
+        }
     },
     ...authRoutes,
-    ...homeRoutes,
+    // ...homeRoutes,
     ...dashboardRoutes,
     //Route 404 - Page non trouvée
     {

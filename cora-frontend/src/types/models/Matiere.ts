@@ -4,7 +4,7 @@ export interface Matiere {
     image?: string;
     statusColor?: string;
     status: string;
-    nom: string;
+    nom_matiere: string;
     colorBg: string;
     progression: number;
     progressColor: string;

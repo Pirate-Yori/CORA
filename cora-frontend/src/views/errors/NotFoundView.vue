@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppButton from '@/components/common/AppButton.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
@@ -6,12 +7,12 @@ const goBack = () => {
     router.back();
 }
 const goHome =()=>{
-    router.push({name:'Home'});
+    router.push({name:'Dashboard'});
 }
 </script>
 
 <template>
-    <div class="main-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div class="min-h-screen h-full bg-gray-50 flex items-center justify-center px-4">
         <div class="text-center max-w-md">
             <!-- Icon -->
             <div class="mb-8">
@@ -29,9 +30,10 @@ const goHome =()=>{
 
             <!-- Actions -->
             <div class="flex gap-4 justify-center">
-                <button @click="goBack" class="btn btn-outline">Retour</button>
-                <button @click="goHome" class="btn btn-primary">Accueil</button>
+                <AppButton @click="goBack" variant="outline">Retour</AppButton>
+                <AppButton @click="goHome" variant="primary">Accueil</AppButton>
             </div>
+
         </div>
     </div>
 </template>

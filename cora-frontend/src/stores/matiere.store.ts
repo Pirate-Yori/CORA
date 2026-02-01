@@ -59,8 +59,7 @@ export const useMatiereStore = defineStore("matiere", () => {
 
         try {
             const response = await matiereService.getMatieres();
-            matieres.value = response.results; // ✅ Mise à jour du state
-            // ❌ Pas de return
+            matieres.value = response.results; 
         } catch (err: any) {
             error.value = err.response?.data?.message || 'Erreur lors du chargement des matières';
             console.error("Erreur:", err);
@@ -76,8 +75,7 @@ export const useMatiereStore = defineStore("matiere", () => {
 
         try {
             const response = await matiereService.getMatiereById(matiereId);
-            matiereActive.value = response.data;
-            
+            matiereActive.value = response;
             // Mettre à jour aussi dans la liste
             const index = matieres.value.findIndex(m => m.id === matiereId);
             if (index !== -1) {
