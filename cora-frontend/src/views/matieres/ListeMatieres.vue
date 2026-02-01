@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import BreadCrumb from "@/components/common/BreadCrumb.vue";
 import { useMatiereStore } from "@/stores/matiere.store";
 import { BookText } from "lucide-vue-next";
 import { ref, computed, onMounted } from "vue";
@@ -194,6 +195,11 @@ const naviguerVersMatiere = (matiereId: number) => {
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
+     <header class="bg-white border-b">
+      <div class="max-w-7xl mx-auto">
+        <BreadCrumb />
+      </div>
+     </header>
     <div class="bg-white border-b border-gray-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div

@@ -35,10 +35,18 @@ const dashboardRoutes: RouteRecordRaw[] = [
                     },
                     //Detail d'une matiere
                     {
-                        path: "/matiere/:matiereId",
+                        path: ":matiereId",
                         name: "DetailMatiere",
                         component: () => DetailMatiere,
-                        meta: { title: 'Détails de la matière' },
+                        props: true,
+                        meta: {
+                            title: 'Détails de la matière',
+                            breadcrumb: (route:any) => [
+                                { label: "Tableau de bord", path: "/dashboard" },
+                                { label: 'Mes matières', path: '/matieres' },
+                                { label: route.params.matiereName || 'Matière', path: route.path }
+                            ]
+                        },
                     },
                     //Chapitre d'un cours specifiue
                     {
@@ -53,7 +61,7 @@ const dashboardRoutes: RouteRecordRaw[] = [
                     {
                         path: ":matiereId/cours/:coursId/chapitre/:chapitreId/lesson/:lessonId",
                         name: "Leçon",
-                        props:true,
+                        props: true,
                         component: () => Leçon,
                         meta: {
                             title: "Leçon"
