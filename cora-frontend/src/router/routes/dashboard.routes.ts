@@ -1,17 +1,11 @@
-import DashboardLayout from "@/layouts/DashboardLayout.vue";
-import ProfileView from "@/views/auth/ProfileView.vue";
-import LandingView from "@/views/dasboard/LandingView.vue";
-import Dashboard from "@/views/Dashboard.vue";
-import CoursChapitres from "@/views/matieres/CoursChapitres.vue";
-import DetailMatiere from "@/views/matieres/DetailMatiere.vue";
-import Leçon from "@/views/matieres/Leçon.vue";
-import ListeMatieres from "@/views/matieres/ListeMatieres.vue";
+
+
 import type { RouteRecordRaw } from "vue-router";
 
 const dashboardRoutes: RouteRecordRaw[] = [
     {
         path: "/",
-        component: () => DashboardLayout,
+        component: () => import("@/layouts/DashboardLayout.vue"),
         meta: {
             requiresAuth: false
         },
@@ -22,52 +16,56 @@ const dashboardRoutes: RouteRecordRaw[] = [
                 component: () => import("@/views/home/DashboardView.vue"),
                 meta: {
                     title: "Accueil",
-                    requiresAuth:false,
-                    redirectIfAuth:true
+                    requiresAuth: false,
+                    redirectIfAuth: true
                 }
             },
             {
                 path: "dashboard",
                 name: "Dashboard",
-                component: () => Dashboard,
+                component: () => import("@/views/Dashboard.vue"),
                 meta: {
                     title: "Dashboard",
                     requiresAuth: true
                 }
             },
             {
-                path:"profil",
-                name:"Profile",
-                component:()=>ProfileView,
-                meta:{
-                    requiresAuth:true
+                path: "profil",
+                name: "Profile",
+                component: () => import("@/views/auth/ProfileView.vue"),
+                meta: {
+                    requiresAuth: true
                 }
             },
             {
                 path: "matieres",
-                meta:{
-                    requiresAuth:true
+                meta: {
+                    requiresAuth: true
                 },
                 children: [
                     //Liste des matiere
                     {
                         path: "",
                         name: "Matieres",
-                        component: () => ListeMatieres,
+                        component: () => import("@/views/matieres/ListeMatieres.vue"),
                         meta: { title: "Mes matières" }
                     },
                     //Detail d'une matiere
                     {
                         path: ":matiereId",
                         name: "DetailMatiere",
-                        component: () => DetailMatiere,
+                        component: () => import("@/views/matieres/DetailMatiere.vue"),
                         props: true,
                         meta: {
                             title: 'Détails de la matière',
-                            breadcrumb: (route:any) => [
+                            breadcrumb: (route: any) => [
                                 { label: "Tableau de bord", path: "/dashboard" },
                                 { label: 'Mes matières', path: '/matieres' },
-                                { label: route.params.matiereName || 'Matière', path: route.path }
+                                // {
+                                //     label: route.params?.matiereName
+                                //         || `Matière ${route.params?.matiereId ?? ""}`,
+                                //     path: route.path
+                                // }
                             ]
                         },
                     },
@@ -75,7 +73,7 @@ const dashboardRoutes: RouteRecordRaw[] = [
                     {
                         path: ":matiereId/cours/:coursId",
                         name: "CoursChapitres",
-                        component: () => CoursChapitres,
+                        component: () => import("@/views/matieres/CoursChapitres.vue"),
                         meta: {
                             title: "Chapitres du cours"
                         }
@@ -85,7 +83,7 @@ const dashboardRoutes: RouteRecordRaw[] = [
                         path: ":matiereId/cours/:coursId/chapitre/:chapitreId/lesson/:lessonId",
                         name: "Leçon",
                         props: true,
-                        component: () => Leçon,
+                        component: () => import("@/views/matieres/Leçon.vue"),
                         meta: {
                             title: "Leçon"
                         }

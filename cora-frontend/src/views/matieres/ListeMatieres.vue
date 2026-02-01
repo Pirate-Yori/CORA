@@ -53,11 +53,17 @@ const matieresFiltered = computed(() => {
 });
 
 // Navigation
-const naviguerVersMatiere = (matiereId: number) => {
-  router.push({
-    name: "DetailMatiere",
-    params: { matiereId },
-  });
+const naviguerVersMatiere =  (matiereId: number) => {
+  try{
+
+    console.log("matier",matiereId)
+     router.push({
+      name: "DetailMatiere",
+      params: { matiereId },
+    });
+  }catch(error){
+    console.error("erreur",error)
+  }
 };
 </script>
 

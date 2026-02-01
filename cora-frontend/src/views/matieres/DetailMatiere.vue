@@ -1,18 +1,19 @@
 <script setup lang="ts">
+console.log("SCRIPT SETUP EXECUTÉ")
+
 import { useMatieres, useCours } from "@/composables";
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const tabActif = ref("cours");
 // const matiereStore = useMatiereStore();
-// const matiereActive = matiereStore.matieres
+// const matiereActive? = matiereStore.matieres
 // const coursList = computed(()=>matiereStore.coursList)
 const route = useRoute();
 
 const matiereId = route.params.matiereId;
 const { loadMatiere, matiereActive } = useMatieres();
 const { loadCours, coursList } = useCours();
-
 onMounted(async () => {
   await Promise.all([
     loadMatiere(Number(matiereId)),
@@ -20,7 +21,7 @@ onMounted(async () => {
   ]);
 });
 // Données de la matière
-// const matiereActive = ref({
+// const matiereActive? = ref({
 //   nom: "Mathématiques",
 //   icon: "📐",
 //   professeur: "M. Martin",
@@ -49,9 +50,15 @@ onMounted(async () => {
 //   ],
 // });
 
-const progression = computed(() =>
-  Math.round((matiereActive.value.coursTermines / matiereActive.value.totalCours) * 100),
-);
+const progression = computed(() => {
+  if (!matiereActive?.value) return 0
+  if (!matiereActive?.value.totalCours) return 0
+
+  return Math.round(
+    (matiereActive?.value.coursTermines / matiereActive?.value.totalCours) * 100
+  )
+})
+
 const router = useRouter();
 
 // Liste des cours
@@ -135,7 +142,7 @@ const naviguerVersCours = (coursId: number) => {
           <!-- Breadcrumb -->
           <nav class="flex items-center gap-2 text-sm">
             <a
-              href="#"
+              href="#" 
               class="text-gray-500 hover:text-blue-600 transition-colors"
               >Tableau de bord</a
             >
@@ -170,7 +177,7 @@ const naviguerVersCours = (coursId: number) => {
                 d="M9 5l7 7-7 7"
               />
             </svg>
-            <span class="text-gray-800 font-medium">{{ matiereActive.nom_matiere }}</span>
+            <span class="text-gray-800 font-medium">{{ matiereActive?.nom_matiere }}</span>
           </nav>
 
           <!-- Actions -->
@@ -241,10 +248,10 @@ const naviguerVersCours = (coursId: number) => {
               <div
                 class="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center text-6xl shadow-xl"
               >
-                {{ matiereActive.icon }}
+                {{ matiereActive?.icon }}
               </div>
               <div>
-                <h1 class="text-5xl font-bold mb-2">{{ matiereActive.nom_matiere }}</h1>
+                <h1 class="text-5xl font-bold mb-2">{{ matiereActive?.nom_matiere }}</h1>
                 <p class="text-blue-100 text-lg flex items-center gap-2">
                   <svg
                     class="w-5 h-5"
@@ -259,19 +266,19 @@ const naviguerVersCours = (coursId: number) => {
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
-                  {{ matiereActive.professeur }}
+                  {{ matiereActive?.professeur }}
                 </p>
               </div>
             </div>
 
             <p class="text-xl text-blue-50 mb-8 leading-relaxed max-w-xl">
-              {{ matiereActive.description }}
+              {{ matiereActive?.description }}
             </p>
 
             <!-- Tags -->
             <div class="flex flex-wrap gap-2 mb-8">
               <span
-                v-for="tag in matiereActive.tags"
+                v-for="tag in matiereActive?.tags"
                 :key="tag"
                 class="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium"
               >
@@ -318,7 +325,7 @@ const naviguerVersCours = (coursId: number) => {
               >
                 <div class="text-white/70 text-sm mb-1">Total cours</div>
                 <div class="text-white text-3xl font-bold">
-                  {{ matiereActive.totalCours }}
+                  {{ matiereActive?.totalCours }}
                 </div>
               </div>
               <div
@@ -326,7 +333,7 @@ const naviguerVersCours = (coursId: number) => {
               >
                 <div class="text-white/70 text-sm mb-1">Durée totale</div>
                 <div class="text-white text-3xl font-bold">
-                  {{ matiereActive.dureeTotal }}
+                  {{ matiereActive?.dureeTotal }}
                 </div>
               </div>
               <div
@@ -334,7 +341,7 @@ const naviguerVersCours = (coursId: number) => {
               >
                 <div class="text-white/70 text-sm mb-1">Exercices</div>
                 <div class="text-white text-3xl font-bold">
-                  {{ matiereActive.totalExercices }}
+                  {{ matiereActive?.totalExercices }}
                 </div>
               </div>
               <div
@@ -342,7 +349,7 @@ const naviguerVersCours = (coursId: number) => {
               >
                 <div class="text-white/70 text-sm mb-1">Niveau</div>
                 <div class="text-white text-2xl font-bold">
-                  {{ matiereActive.niveau }}
+                  {{ matiereActive?.niveau }}
                 </div>
               </div>
             </div>
@@ -352,18 +359,18 @@ const naviguerVersCours = (coursId: number) => {
               <div class="flex items-center justify-between mb-3">
                 <span class="text-white font-semibold">Votre progression</span>
                 <span class="text-white text-2xl font-bold"
-                  >{{ matiereActive.progression }}%</span
+                  >{{ matiereActive?.progression }}%</span
                 >
               </div>
               <div class="w-full bg-white/20 rounded-full h-3">
                 <div
                   class="h-3 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-1000 shadow-lg"
-                  :style="{ width: matiereActive.progression + '%' }"
+                  :style="{ width: matiereActive?.progression + '%' }"
                 ></div>
               </div>
               <p class="text-white/70 text-sm mt-2">
-                {{ matiereActive.coursTermines }} cours sur
-                {{ matiereActive.totalCours }} complétés
+                {{ matiereActive?.coursTermines }} cours sur
+                {{ matiereActive?.totalCours }} complétés
               </p>
             </div>
           </div>
@@ -660,7 +667,7 @@ const naviguerVersCours = (coursId: number) => {
             À propos de ce cours
           </h2>
           <div class="prose prose-lg text-gray-600 leading-relaxed space-y-4">
-            <p>{{ matiereActive.descriptionComplete }}</p>
+            <p>{{ matiereActive?.descriptionComplete }}</p>
             <p>
               Ce cours complet vous permettra de maîtriser tous les concepts
               fondamentaux et avancés de la matière. Chaque leçon est conçue
@@ -683,7 +690,7 @@ const naviguerVersCours = (coursId: number) => {
           </h2>
           <div class="space-y-4">
             <div
-              v-for="(objectif, index) in matiereActive.objectifs"
+              v-for="(objectif, index) in matiereActive?.objectifs"
               :key="index"
               class="flex items-start gap-4 p-4 bg-blue-50 rounded-xl"
             >
@@ -704,7 +711,7 @@ const naviguerVersCours = (coursId: number) => {
           <h2 class="text-2xl font-bold text-gray-800 mb-6">Prérequis</h2>
           <div class="space-y-4">
             <div
-              v-for="(prerequis, index) in matiereActive.prerequis"
+              v-for="(prerequis, index) in matiereActive?.prerequis"
               :key="index"
               class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl"
             >

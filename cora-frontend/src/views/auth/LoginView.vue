@@ -4,7 +4,8 @@ import { useRoute, useRouter } from 'vue-router';
 const router = useRouter()
 const route = useRoute()
 const handleLogin = ()=>{
-    const redirectTo = route.query.redirectTo as string || '/dasboard'
+    const redirectTo = route.query.redirectTo as string || '/dashboard'
+    console.log("route",route.query.redirectTo)
     return router.push(redirectTo)
 }
 const register = ()=>{
