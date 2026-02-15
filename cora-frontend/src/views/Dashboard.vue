@@ -1,23 +1,27 @@
 <script setup lang="ts">
-import { useAuth } from "@/composables";
-import { ref } from "vue";
+import AppAlert from "@/components/common/AppAlert.vue";
+import AppSpinner from "@/components/common/AppSpinner.vue";
+import MatiereListe from "@/components/matiere/MatiereListe.vue";
+import { useAuth, useMatieresPage } from "@/composables";
+import type { Matiere } from "@/types";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
-const { user, userFullName,logout,token } = useAuth();
-const router = useRouter()
-// Données utilisateur
-// const user = ref({
-//   prenom: 'Jean',
-//   nom: 'Dupont',
-//   classe: '3ème A',
-//   initiales: 'JD'
-// });
+const { user, userFullName, logout, token } = useAuth();
+const router = useRouter();
+const { isLoading, error, statistiques, matieres } = useMatieresPage();
 
-const handleLogout = async()=>{
-  console.log("deconexion")
-  // await logout(String(token))
-  // router.push('/auth/login')
-}
+const naviguerVersMatiere = (id: number) => {
+  console.log("matier", id);
+  const matiereId = id;
+  router.push({
+    name: "DetailMatiere",
+    params: { matiereId },
+  });
+};
+const allMatiere = () => {
+  router.push({ name: "Matieres" });
+};
 
 // Statistiques
 const stats = ref({
@@ -28,56 +32,52 @@ const stats = ref({
 });
 
 // Matières
-const matieres = ref([
-  {
-    id: 1,
-    nom: "Mathématiques",
-    professeur: "M. Martin",
-    icon: "📐",
-    colorBg: "bg-blue-100",
-    progressColor: "bg-blue-600",
-    progression: 85,
-    prochainCours: "Demain, 9h00",
-    status: "En cours",
-    statusColor: "bg-green-100 text-green-700",
-  },
-  {
-    id: 2,
-    nom: "Français",
-    professeur: "Mme Dubois",
-    icon: "📚",
-    colorBg: "bg-purple-100",
-    progressColor: "bg-purple-600",
-    progression: 72,
-    prochainCours: "Lun, 14h00",
-    status: "En cours",
-    statusColor: "bg-green-100 text-green-700",
-  },
-  {
-    id: 3,
-    nom: "Anglais",
-    professeur: "Mr. Smith",
-    icon: "🌍",
-    colorBg: "bg-orange-100",
-    progressColor: "bg-orange-600",
-    progression: 90,
-    prochainCours: "Ven, 10h00",
-    status: "Avancé",
-    statusColor: "bg-blue-100 text-blue-700",
-  },
-  {
-    id: 4,
-    nom: "Sciences",
-    professeur: "Mme Laurent",
-    icon: "🔬",
-    colorBg: "bg-green-100",
-    progressColor: "bg-green-600",
-    progression: 65,
-    prochainCours: "Mar, 15h00",
-    status: "En cours",
-    statusColor: "bg-green-100 text-green-700",
-  },
-]);
+// const matieres: Matiere[] = [
+//   {
+//     id: 1,
+//     nom_matiere: "Mathématiques",
+//     icon: "📐",
+//     colorBg: "bg-blue-100",
+//     progressColor: "bg-blue-600",
+//     progression: 85,
+//     prochainCours: "Demain, 9h00",
+//     status: "En cours",
+//     statusColor: "bg-green-100 text-green-700",
+//   },
+//   {
+//     id: 2,
+//     nom_matiere: "Français",
+//     icon: "📚",
+//     colorBg: "bg-purple-100",
+//     progressColor: "bg-purple-600",
+//     progression: 72,
+//     prochainCours: "Lun, 14h00",
+//     status: "En cours",
+//     statusColor: "bg-green-100 text-green-700",
+//   },
+//   {
+//     id: 3,
+//     nom_matiere: "Anglais",
+//     icon: "🌍",
+//     colorBg: "bg-orange-100",
+//     progressColor: "bg-orange-600",
+//     progression: 90,
+//     prochainCours: "Ven, 10h00",
+//     status: "Avancé",
+//     statusColor: "bg-blue-100 text-blue-700",
+//   },
+//   {
+//     id: 4,
+//     nom_matiere: "Sciences",
+//     icon: "🔬",
+//     colorBg: "bg-green-100",
+//     progressColor: "bg-green-600",
+//     progression: 65,
+//     prochainCours: "Mar, 15h00",
+//     status: "En cours",
+//     statusColor: "bg-green-100 text-green-700",
+//   },
+// ];
 
 // Devoirs
 const devoirs = ref([
@@ -178,7 +178,14 @@ const emploiDuTemps = ref([
 ]);
 </script>
 <template>
+  <div v-if="isLoading"class="min-h-screen h-full w-full flex justify-center items-center">
+    <AppSpinner size="xl" text="chargement des données ..." />
+  </div>
+  <div v-else-if="error" class="min-h-screen h-full w-full flex justify-center items-center">
+    <AppAlert variant="danger">{{ error }}</AppAlert>
+  </div>
   <div
+    v-else
     class="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50"
   >
     <!-- Contenu principal -->
@@ -219,9 +226,9 @@ const emploiDuTemps = ref([
             </div>
           </div>
           <h3 class="text-2xl font-bold text-gray-800 mb-1">
-            {{ stats.coursActifs }}
+            {{ statistiques.total }}
           </h3>
-          <p class="text-sm text-gray-500">Cours actifs</p>
+          <p class="text-sm text-gray-500">matières</p>
         </div>
 
         <!-- Devoirs à venir -->
@@ -318,88 +325,13 @@ const emploiDuTemps = ref([
         <div class="lg:col-span-2 space-y-8">
           <!-- Matières -->
           <section>
-            <div class="flex items-center justify-between mb-6">
-              <h3 class="text-2xl font-bold text-gray-800">Mes matières</h3>
-              <button
-                class="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
-              >
-                Voir tout
-              </button>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div
-                v-for="matiere in matieres"
-                :key="matiere.id"
-                class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-all cursor-pointer group"
-              >
-                <div class="flex items-start justify-between mb-4">
-                  <div
-                    :class="[
-                      'w-12 h-12 rounded-xl flex items-center justify-center',
-                      matiere.colorBg,
-                    ]"
-                  >
-                    <span class="text-2xl">{{ matiere.icon }}</span>
-                  </div>
-                  <span
-                    :class="[
-                      'px-3 py-1 rounded-full text-xs font-medium',
-                      matiere.statusColor,
-                    ]"
-                  >
-                    {{ matiere.status }}
-                  </span>
-                </div>
-
-                <h4
-                  class="text-lg font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors"
-                >
-                  {{ matiere.nom }}
-                </h4>
-                <p class="text-sm text-gray-500 mb-4">
-                  {{ matiere.professeur }}
-                </p>
-
-                <!-- Barre de progression -->
-                <div class="mb-3">
-                  <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs text-gray-500">Progression</span>
-                    <span class="text-xs font-semibold text-gray-700"
-                      >{{ matiere.progression }}%</span
-                    >
-                  </div>
-                  <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      :class="[
-                        'h-2 rounded-full transition-all',
-                        matiere.progressColor,
-                      ]"
-                      :style="{ width: matiere.progression + '%' }"
-                    ></div>
-                  </div>
-                </div>
-
-                <div class="flex items-center gap-4 text-xs text-gray-500">
-                  <span class="flex items-center gap-1">
-                    <svg
-                      class="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    {{ matiere.prochainCours }}
-                  </span>
-                </div>
-              </div>
-            </div>
+            <MatiereListe
+              titre="Mes matiere"
+              :loading="isLoading"
+              :matieres="matieres.slice(0, 4)"
+              @open-matiere="naviguerVersMatiere"
+              @voir-tout="allMatiere"
+            />
           </section>
 
           <!-- Devoirs à venir -->

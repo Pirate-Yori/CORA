@@ -26,8 +26,8 @@ class MatiereService {
         return data
     }
 
-    async getChapitres(matiereId: number, courId: number): Promise<any> {
-        const { data } = await apiClient.get(`/matieres/${matiereId}/courses/${courId}/chapters/`)
+    async getChapitres(courId: number): Promise<any> {
+        const { data } = await apiClient.get(`/courses/${courId}/chapitres/`)
         return data
     }
     async getLecon(matiereId: number, coursId: number, chapitreId: number, leconId: number): Promise<any> {

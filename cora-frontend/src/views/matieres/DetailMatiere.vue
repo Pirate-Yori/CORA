@@ -20,35 +20,6 @@ onMounted(async () => {
     // loadCours(Number(matiereId)),
   ]);
 });
-// Données de la matière
-// const matiereActive? = ref({
-//   nom: "Mathématiques",
-//   icon: "📐",
-//   professeur: "M. Martin",
-//   description:
-//     "Maîtrisez les concepts fondamentaux des mathématiques à travers des cours structurés, des exercices pratiques et des applications concrètes.",
-//   descriptionComplete:
-//     "Ce cours de mathématiques complet vous guidera à travers tous les concepts essentiels du programme. Des bases de l'algèbre aux fonctions avancées, en passant par la géométrie et les statistiques, vous développerez une compréhension solide et durable de la matière.",
-//   tags: ["Algèbre", "Géométrie", "Fonctions", "Statistiques"],
-//   totalCours: 4,
-//   dureeTotal: "24h",
-//   totalExercices: 156,
-//   niveau: "3ème",
-//   coursTermines: 1,
-//   objectifs: [
-//     "Maîtriser les équations et inéquations du premier et second degré",
-//     "Comprendre et appliquer les théorèmes de géométrie plane",
-//     "Analyser et représenter différents types de fonctions",
-//     "Interpréter des données statistiques et calculer des probabilités",
-//     "Développer un raisonnement mathématique rigoureux",
-//   ],
-//   prerequis: [
-//     "Connaissances de base en arithmétique",
-//     "Compréhension des fractions et des nombres décimaux",
-//     "Bases de la géométrie plane (périmètre, aire)",
-//     "Motivation et régularité dans le travail",
-//   ],
-// });
 
 const progression = computed(() => {
   if (!matiereActive?.value) return 0
@@ -61,65 +32,6 @@ const progression = computed(() => {
 
 const router = useRouter();
 
-// Liste des cours
-// const coursList = ref([
-//   {
-//     id: 1,
-//     titre: 'Algèbre et équations',
-//     description: 'Découvrez les fondamentaux de l\'algèbre : équations, inéquations, systèmes et expressions algébriques. Développez votre capacité à résoudre des problèmes complexes.',
-//     icon: '🔢',
-//     chapitres: 8,
-//     duree: '6h 30min',
-//     exercices: 42,
-//     niveau: 'Débutant',
-//     completed: true,
-//     enCours: false,
-//     verrouille: false,
-//     progression: 100
-//   },
-//   {
-//     id: 2,
-//     titre: 'Géométrie plane et dans l\'espace',
-//     description: 'Explorez les figures géométriques, les théorèmes fondamentaux (Pythagore, Thalès) et les transformations. Apprenez à calculer aires, volumes et angles.',
-//     icon: '📐',
-//     chapitres: 6,
-//     duree: '5h 45min',
-//     exercices: 38,
-//     niveau: 'Intermédiaire',
-//     completed: false,
-//     enCours: true,
-//     verrouille: false,
-//     progression: 45
-//   },
-//   {
-//     id: 3,
-//     titre: 'Fonctions et graphiques',
-//     description: 'Maîtrisez les fonctions linéaires, affines et du second degré. Apprenez à les représenter graphiquement et à analyser leurs propriétés.',
-//     icon: '📊',
-//     chapitres: 7,
-//     duree: '7h 15min',
-//     exercices: 45,
-//     niveau: 'Intermédiaire',
-//     completed: false,
-//     enCours: false,
-//     verrouille: false,
-//     progression: 0
-//   },
-//   {
-//     id: 4,
-//     titre: 'Statistiques et probabilités',
-//     description: 'Apprenez à collecter, organiser et interpréter des données. Découvrez les concepts de base des probabilités et leurs applications pratiques.',
-//     icon: '📈',
-//     chapitres: 5,
-//     duree: '4h 30min',
-//     exercices: 31,
-//     niveau: 'Débutant',
-//     completed: false,
-//     enCours: false,
-//     verrouille: true,
-//     progression: 0
-//   }
-// ]);
 
 const naviguerVersCours = (coursId: number) => {
   const cours = coursList.value.find((c) => c.id === coursId);
@@ -325,7 +237,7 @@ const naviguerVersCours = (coursId: number) => {
               >
                 <div class="text-white/70 text-sm mb-1">Total cours</div>
                 <div class="text-white text-3xl font-bold">
-                  {{ matiereActive?.totalCours }}
+                  {{ matiereActive?.nb_cours }}
                 </div>
               </div>
               <div
@@ -453,7 +365,7 @@ const naviguerVersCours = (coursId: number) => {
           >
             <!-- Header avec numéro -->
             <div
-              class="relative h-48 bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center"
+              class="relative h-48 bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center"
             >
               <div
                 class="absolute top-4 left-4 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white font-bold text-xl border-2 border-white/30"
@@ -524,7 +436,7 @@ const naviguerVersCours = (coursId: number) => {
                       d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                     />
                   </svg>
-                  {{ cours.chapitres }} chapitres
+                  {{ cours.nb_chapitres }} chapitres
                 </div>
                 <div class="flex items-center gap-2 text-sm text-gray-500">
                   <svg
@@ -540,7 +452,7 @@ const naviguerVersCours = (coursId: number) => {
                       d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  {{ cours.duree }}
+                  {{ cours.duree_totale }}
                 </div>
                 <div class="flex items-center gap-2 text-sm text-gray-500">
                   <svg

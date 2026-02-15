@@ -1,3 +1,180 @@
+<script setup lang="ts">
+import { useChapitres, useMatieres } from "@/composables";
+import { ref, computed, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+const router = useRouter();
+const route = useRoute();
+
+const matiereId = route.params.matiereId;
+const coursId = route.params.coursId;
+const {chapitres, loadChapitres,isLoading} = useChapitres()
+const {matiereActive, loadMatiere} = useMatieres()
+
+const progression = computed(() =>
+console.log('ok')
+  // Math.round((matiereActive.value.coursTermines / matiereActive.value.totalCours) * 100),
+);
+
+const circumference = 2 * Math.PI * 70;
+
+// Chapitres
+const chapitreActif = ref(1);
+// const chapitres = ref([
+//   {
+//     id: 1,
+//     nom: "Algèbre",
+//     icon: "🔢",
+//     total: 8,
+//     completed: 5,
+//     description: "Équations, inéquations et expressions algébriques",
+//   },
+//   {
+//     id: 2,
+//     nom: "Géométrie",
+//     icon: "📐",
+//     total: 6,
+//     completed: 2,
+//     description: "Figures planes et solides, théorèmes",
+//   },
+//   {
+//     id: 3,
+//     nom: "Fonctions",
+//     icon: "📊",
+//     total: 7,
+//     completed: 1,
+//     description: "Fonctions linéaires, affines et polynomiales",
+//   },
+//   {
+//     id: 4,
+//     nom: "Statistiques",
+//     icon: "📈",
+//     total: 3,
+//     completed: 0,
+//     description: "Données, graphiques et probabilités",
+//   },
+// ]);
+
+const chapitreSelectionne = computed(() =>
+  chapitres.value.find((c) => c.id === chapitreActif.value),
+);
+
+// Cours
+const cours = ref([
+  {
+    id: 1,
+    chapitreId: 1,
+    titre: "Introduction aux équations du premier degré",
+    description:
+      "Découvrez les bases des équations linéaires et apprenez à les résoudre pas à pas avec des méthodes simples et efficaces.",
+    duree: "45 min",
+    exercices: 12,
+    niveau: "Débutant",
+    completed: true,
+    enCours: false,
+    progression: 100,
+  },
+  {
+    id: 2,
+    chapitreId: 1,
+    titre: "Résolution d'équations complexes",
+    description:
+      "Approfondissez vos connaissances avec des équations plus avancées incluant fractions et parenthèses.",
+    duree: "1h 15min",
+    exercices: 18,
+    niveau: "Intermédiaire",
+    completed: false,
+    enCours: true,
+    progression: 65,
+  },
+  {
+    id: 3,
+    chapitreId: 1,
+    titre: "Systèmes d'équations",
+    description:
+      "Maîtrisez la résolution de systèmes d'équations à deux inconnues par substitution et addition.",
+    duree: "1h 30min",
+    exercices: 15,
+    niveau: "Intermédiaire",
+    completed: false,
+    enCours: false,
+    progression: 0,
+  },
+  {
+    id: 4,
+    chapitreId: 1,
+    titre: "Inéquations et intervalles",
+    description:
+      "Apprenez à résoudre des inéquations et à représenter les solutions sur une droite graduée.",
+    duree: "50 min",
+    exercices: 10,
+    niveau: "Intermédiaire",
+    completed: false,
+    enCours: false,
+    progression: 0,
+  },
+  {
+    id: 5,
+    chapitreId: 2,
+    titre: "Théorème de Pythagore",
+    description:
+      "Découvrez le célèbre théorème et ses applications dans les triangles rectangles.",
+    duree: "1h",
+    exercices: 14,
+    niveau: "Débutant",
+    completed: true,
+    enCours: false,
+    progression: 100,
+  },
+  {
+    id: 6,
+    chapitreId: 2,
+    titre: "Triangles et trigonométrie",
+    description:
+      "Introduction aux rapports trigonométriques : sinus, cosinus et tangente.",
+    duree: "1h 20min",
+    exercices: 16,
+    niveau: "Avancé",
+    completed: false,
+    enCours: false,
+    progression: 0,
+  },
+]);
+
+const coursFiltered = computed(() =>
+  cours.value.filter((c) => c.chapitreId === chapitreActif.value),
+);
+const naviguerVersLeçon = (chapitreId: number, lessonId: number) => {
+  console.log(
+    "cliqué",
+    chapitreId,
+    "leçon",
+    lessonId,
+    "matiereid",
+    matiereId,
+    "cour",
+    coursId,
+  );
+
+  router.push({
+    name: "Leçon",
+    params: {
+      matiereId: matiereId,
+      coursId: coursId,
+      chapitreId: chapitreId,
+      lessonId: lessonId,
+    },
+  });
+};
+
+onMounted(async ()=>{
+  await Promise.all([
+    loadMatiere(Number(matiereId)),
+    loadChapitres(Number(coursId))
+  ])
+})
+</script>
+
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header de navigation -->
@@ -5,92 +182,13 @@
       class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm"
     >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-          <!-- Breadcrumb -->
-          <nav class="flex items-center gap-2 text-sm">
-            <a
-              href="#"
-              class="text-gray-500 hover:text-blue-600 transition-colors"
-              >Tableau de bord</a
-            >
-            <svg
-              class="w-4 h-4 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-            <a
-              href="#"
-              class="text-gray-500 hover:text-blue-600 transition-colors"
-              >Matières</a
-            >
-            <svg
-              class="w-4 h-4 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-            <span class="text-gray-800 font-medium">{{ matiere.nom }}</span>
-          </nav>
-
-          <!-- Actions -->
-          <div class="flex items-center gap-3">
-            <button
-              class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-            >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-            <button
-              class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-            >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
+        <!--  -->
       </div>
     </header>
 
     <!-- Hero Section -->
     <div
-      class="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white"
+      class="bg-linear-to-br from-blue-600 via-indigo-600 to-purple-700 text-white"
     >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div
@@ -102,11 +200,11 @@
               <div
                 class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-5xl"
               >
-                {{ matiere.icon }}
+                {{ matiereActive?.icon }}
               </div>
               <div>
-                <h1 class="text-4xl font-bold mb-2">{{ matiere.nom }}</h1>
-                <p class="text-blue-100 flex items-center gap-2">
+                <h1 class="text-4xl font-bold mb-2">{{ matiereActive?.nom_matiere }}</h1>
+                <!-- <p class="text-blue-100 flex items-center gap-2">
                   <svg
                     class="w-5 h-5"
                     fill="none"
@@ -120,12 +218,12 @@
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
-                  {{ matiere.professeur }}
-                </p>
+                  {{ matiereActive?.professeur }}
+                </p> -->
               </div>
             </div>
             <p class="text-lg text-blue-50 mb-6 max-w-2xl">
-              {{ matiere.description }}
+              {{ matiereActive?.description }}
             </p>
 
             <!-- Stats rapides -->
@@ -149,7 +247,7 @@
                   </svg>
                 </div>
                 <div>
-                  <div class="text-xl font-bold">{{ matiere.totalCours }}</div>
+                  <div class="text-xl font-bold">{{ matiereActive?.nb_cours }}</div>
                   <div class="text-xs text-blue-200">Cours</div>
                 </div>
               </div>
@@ -172,7 +270,7 @@
                   </svg>
                 </div>
                 <div>
-                  <div class="text-xl font-bold">{{ matiere.dureeTotal }}</div>
+                  <div class="text-xl font-bold">{{ matiereActive?.dureeTotal }}</div>
                   <div class="text-xs text-blue-200">Heures</div>
                 </div>
               </div>
@@ -196,7 +294,7 @@
                 </div>
                 <div>
                   <div class="text-xl font-bold">
-                    {{ matiere.coursTermines }}/{{ matiere.totalCours }}
+                    {{ matiereActive?.coursTermines |0 }}/{{ matiereActive?.nb_cours }}
                   </div>
                   <div class="text-xs text-blue-200">Complétés</div>
                 </div>
@@ -205,7 +303,7 @@
           </div>
 
           <!-- Progression circulaire -->
-          <div class="flex-shrink-0">
+          <div class="shrink-0">
             <div class="relative w-40 h-40">
               <svg class="transform -rotate-90 w-40 h-40">
                 <circle
@@ -235,7 +333,7 @@
               <div
                 class="absolute inset-0 flex flex-col items-center justify-center"
               >
-                <span class="text-4xl font-bold">{{ progression }}%</span>
+                <span class="text-4xl font-bold">{{ matiereActive?.progression }}%</span>
                 <span class="text-xs text-blue-200">Progression</span>
               </div>
             </div>
@@ -248,7 +346,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="flex flex-col lg:flex-row gap-8">
         <!-- Sidebar - Menu des chapitres -->
-        <aside class="lg:w-80 flex-shrink-0">
+        <aside class="lg:w-80 shrink-0">
           <div
             class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sticky top-24"
           >
@@ -266,18 +364,18 @@
                 ]"
               >
                 <span class="flex items-center gap-3">
-                  <span class="text-lg">{{ chapitre.icon }}</span>
-                  <span class="text-sm">{{ chapitre.nom }}</span>
+                  <span class="text-lg">{{ chapitre?.icon }}</span>
+                  <span class="text-sm">{{ chapitre?.titre }}</span>
                 </span>
                 <span
                   class="text-xs px-2 py-1 rounded-full"
                   :class="
-                    chapitre.completed === chapitre.total
+                    chapitre?.completed === chapitre?.total
                       ? 'bg-green-100 text-green-700'
                       : 'bg-gray-100 text-gray-600'
                   "
                 >
-                  {{ chapitre.completed }}/{{ chapitre.total }}
+                  {{ chapitre?.completed }}/{{ chapitre?.total }}
                 </span>
               </button>
             </nav>
@@ -289,7 +387,7 @@
           <!-- Header section -->
           <div class="mb-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-2">
-              {{ chapitreSelectionne?.nom }}
+              {{ chapitreSelectionne?.titre }}
             </h2>
             <p class="text-gray-600">{{ chapitreSelectionne?.description }}</p>
           </div>
@@ -532,179 +630,3 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
-
-const router = useRouter();
-const route = useRoute();
-
-const matiereId = route.params.matiereId;
-const coursId = route.params.coursId;
-// Données de la matière
-const matiere = ref({
-  nom: "Mathématiques",
-  icon: "📐",
-  professeur: "M. Martin",
-  description:
-    "Maîtrisez les concepts fondamentaux des mathématiques à travers des leçons interactives, des exercices pratiques et des applications concrètes.",
-  totalCours: 24,
-  dureeTotal: "18h",
-  coursTermines: 8,
-});
-
-const progression = computed(() =>
-  Math.round((matiere.value.coursTermines / matiere.value.totalCours) * 100),
-);
-
-const circumference = 2 * Math.PI * 70;
-
-// Chapitres
-const chapitreActif = ref(1);
-const chapitres = ref([
-  {
-    id: 1,
-    nom: "Algèbre",
-    icon: "🔢",
-    total: 8,
-    completed: 5,
-    description: "Équations, inéquations et expressions algébriques",
-  },
-  {
-    id: 2,
-    nom: "Géométrie",
-    icon: "📐",
-    total: 6,
-    completed: 2,
-    description: "Figures planes et solides, théorèmes",
-  },
-  {
-    id: 3,
-    nom: "Fonctions",
-    icon: "📊",
-    total: 7,
-    completed: 1,
-    description: "Fonctions linéaires, affines et polynomiales",
-  },
-  {
-    id: 4,
-    nom: "Statistiques",
-    icon: "📈",
-    total: 3,
-    completed: 0,
-    description: "Données, graphiques et probabilités",
-  },
-]);
-
-const chapitreSelectionne = computed(() =>
-  chapitres.value.find((c) => c.id === chapitreActif.value),
-);
-
-// Cours
-const cours = ref([
-  {
-    id: 1,
-    chapitreId: 1,
-    titre: "Introduction aux équations du premier degré",
-    description:
-      "Découvrez les bases des équations linéaires et apprenez à les résoudre pas à pas avec des méthodes simples et efficaces.",
-    duree: "45 min",
-    exercices: 12,
-    niveau: "Débutant",
-    completed: true,
-    enCours: false,
-    progression: 100,
-  },
-  {
-    id: 2,
-    chapitreId: 1,
-    titre: "Résolution d'équations complexes",
-    description:
-      "Approfondissez vos connaissances avec des équations plus avancées incluant fractions et parenthèses.",
-    duree: "1h 15min",
-    exercices: 18,
-    niveau: "Intermédiaire",
-    completed: false,
-    enCours: true,
-    progression: 65,
-  },
-  {
-    id: 3,
-    chapitreId: 1,
-    titre: "Systèmes d'équations",
-    description:
-      "Maîtrisez la résolution de systèmes d'équations à deux inconnues par substitution et addition.",
-    duree: "1h 30min",
-    exercices: 15,
-    niveau: "Intermédiaire",
-    completed: false,
-    enCours: false,
-    progression: 0,
-  },
-  {
-    id: 4,
-    chapitreId: 1,
-    titre: "Inéquations et intervalles",
-    description:
-      "Apprenez à résoudre des inéquations et à représenter les solutions sur une droite graduée.",
-    duree: "50 min",
-    exercices: 10,
-    niveau: "Intermédiaire",
-    completed: false,
-    enCours: false,
-    progression: 0,
-  },
-  {
-    id: 5,
-    chapitreId: 2,
-    titre: "Théorème de Pythagore",
-    description:
-      "Découvrez le célèbre théorème et ses applications dans les triangles rectangles.",
-    duree: "1h",
-    exercices: 14,
-    niveau: "Débutant",
-    completed: true,
-    enCours: false,
-    progression: 100,
-  },
-  {
-    id: 6,
-    chapitreId: 2,
-    titre: "Triangles et trigonométrie",
-    description:
-      "Introduction aux rapports trigonométriques : sinus, cosinus et tangente.",
-    duree: "1h 20min",
-    exercices: 16,
-    niveau: "Avancé",
-    completed: false,
-    enCours: false,
-    progression: 0,
-  },
-]);
-
-const coursFiltered = computed(() =>
-  cours.value.filter((c) => c.chapitreId === chapitreActif.value),
-);
-const naviguerVersLeçon = (chapitreId: number, lessonId: number) => {
-  console.log(
-    "cliqué",
-    chapitreId,
-    "leçon",
-    lessonId,
-    "matiereid",
-    matiereId,
-    "cour",
-    coursId,
-  );
-
-  router.push({
-    name: "Leçon",
-    params: {
-      matiereId: matiereId,
-      coursId: coursId,
-      chapitreId: chapitreId,
-      lessonId: lessonId,
-    },
-  });
-};
-</script>

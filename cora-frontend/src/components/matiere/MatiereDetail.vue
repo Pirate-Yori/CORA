@@ -21,7 +21,7 @@
               <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>
-              <span class="text-gray-800 font-medium truncate max-w-[200px]">{{ leconActive.titre }}</span>
+              <span class="text-gray-800 font-medium truncate max-w-50">{{ leconActive.titre }}</span>
             </nav>
           </div>
 
@@ -71,7 +71,7 @@
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2">
               <div 
-                class="h-2 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 transition-all duration-500"
+                class="h-2 rounded-full bg-linear-to-r from-green-500 to-emerald-600 transition-all duration-500"
                 :style="{ width: progressionGlobale + '%' }"
               ></div>
             </div>
@@ -118,7 +118,7 @@
                 ]"
               >
                 <!-- Indicateur de statut -->
-                <div class="flex-shrink-0 mt-1">
+                <div class="shrink-0 mt-1">
                   <div v-if="lecon.completed" class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -185,7 +185,7 @@
 
           <!-- Zone de contenu vidéo/interactive -->
           <div class="bg-white rounded-2xl shadow-lg border border-gray-200 mb-8 overflow-hidden">
-            <div class="aspect-video bg-gradient-to-br from-blue-500 to-indigo-600 relative">
+            <div class="aspect-video bg-linear-to-br from-blue-500 to-indigo-600 relative">
               <div class="absolute inset-0 flex items-center justify-center">
                 <button class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform">
                   <svg class="w-10 h-10 text-blue-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
@@ -194,7 +194,7 @@
                 </button>
               </div>
               <!-- Contrôles vidéo (simulés) -->
-              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+              <div class="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/60 to-transparent p-4">
                 <div class="flex items-center gap-3">
                   <button class="text-white hover:scale-110 transition-transform">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -214,7 +214,7 @@
           <div class="prose prose-lg max-w-none mb-8">
             <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-xl mb-8">
               <div class="flex gap-3">
-                <svg class="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 text-blue-600 shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <div>
@@ -265,7 +265,7 @@
           </div>
 
           <!-- Section exercices pratiques -->
-          <div class="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl p-8 border border-purple-200 mb-8">
+          <div class="bg-linear-to-br from-purple-50 to-indigo-50 rounded-2xl p-8 border border-purple-200 mb-8">
             <div class="flex items-center gap-3 mb-6">
               <div class="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center">
                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -317,7 +317,7 @@
             <div v-else></div>
 
             <button 
-              class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all font-semibold"
+              class="flex items-center gap-2 px-6 py-3 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all font-semibold"
             >
               {{ leconActive.completed ? 'Leçon suivante' : 'Marquer comme terminé' }}
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

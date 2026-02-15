@@ -76,6 +76,7 @@ export const useMatiereStore = defineStore("matiere", () => {
         try {
             const response = await matiereService.getMatiereById(matiereId);
             matiereActive.value = response;
+            coursList.value = response.cours
             // Mettre à jour aussi dans la liste
             const index = matieres.value.findIndex(m => m.id === matiereId);
             if (index !== -1) {
@@ -99,7 +100,7 @@ export const useMatiereStore = defineStore("matiere", () => {
 
         try {
             const response = await matiereService.getCoursByMatiereId(matiereId);
-            coursList.value = response.results;
+            coursList.value = response.cours;
         } catch (err: any) {
             error.value = err.response?.data?.message || 'Erreur lors du chargement des cours';
             console.error("Erreur:", err);
@@ -128,15 +129,15 @@ export const useMatiereStore = defineStore("matiere", () => {
     // ==========================================
     // ACTIONS - CHAPITRES
     // ==========================================
-    const fetchChapitresByCours = async (matiereId: number, coursId: number) => {
+    const fetchChapitresByCours = async (coursId: number) => {
         isLoading.value = true;
         error.value = null;
 
         try {
-            const response = await matiereService.getChapitres(matiereId, coursId);
-            chapitres.value = response.data;
+            const response = await matiereService.getChapitres(coursId);
+            chapitres.value = response;
         } catch (err: any) {
-            error.value = err.response?.data?.message || 'Erreur lors du chargement des chapitres';
+            error.value = err.response?.message || 'Erreur lors du chargement des chapitres';
             console.error("Erreur:", err);
             throw err;
         } finally {

@@ -68,7 +68,13 @@ const naviguerVersMatiere =  (matiereId: number) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div v-if="isLoading"class="min-h-screen h-full w-full flex justify-center items-center">
+    <AppSpiner size="xl" text="chargement des données ..." />
+  </div>
+  <div v-else-if="error" class="min-h-screen h-full w-full flex justify-center items-center">
+    <AppAlert variant="danger">{{ error }}</AppAlert>
+  </div>
+  <div v-else class="min-h-screen bg-gray-50">
     <!-- Header -->
     <div class="bg-white border-b border-gray-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -292,7 +298,7 @@ const naviguerVersMatiere =  (matiereId: number) => {
             <div class="grid grid-cols-3 gap-3 mb-4">
               <div class="text-center">
                 <div class="text-lg font-bold text-gray-800">
-                  {{ matiere.totalCours }}
+                  {{ matiere.nb_cours }}
                 </div>
                 <div class="text-xs text-gray-500">Cours</div>
               </div>
@@ -322,7 +328,7 @@ const naviguerVersMatiere =  (matiereId: number) => {
                 <div
                   :class="[
                     'h-2 rounded-full transition-all',
-                    matiere.progressColor,
+                    `bg-${matiere.progressColor}-500`,
                   ]"
                   :style="{ width: matiere.progression + '%' }"
                 ></div>
@@ -379,7 +385,8 @@ const naviguerVersMatiere =  (matiereId: number) => {
                   matiere.colorBg,
                 ]"
               >
-                {{ matiere.icon }}
+                <img v-if="matiere.icon" :src="matiere.icon" alt="Icône de la matière" class="w-full h-full object-contain"/>
+                <BookText v-else class="w-10 h-10 text-white"/>
               </div>
 
               <div class="flex-1 min-w-0">
@@ -387,7 +394,7 @@ const naviguerVersMatiere =  (matiereId: number) => {
                   <h3
                     class="text-xl font-bold text-gray-800 hover:text-blue-600 transition-colors"
                   >
-                    {{ matiere.nom }}
+                    {{ matiere.nom_matiere }}
                   </h3>
                   <span
                     :class="[
@@ -398,22 +405,7 @@ const naviguerVersMatiere =  (matiereId: number) => {
                     {{ matiere.statusLabel }}
                   </span>
                 </div>
-                <p class="text-sm text-gray-600 flex items-center gap-2">
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                  {{ matiere.professeur }}
-                </p>
+               
               </div>
             </div>
 
@@ -421,7 +413,7 @@ const naviguerVersMatiere =  (matiereId: number) => {
             <div class="flex gap-6">
               <div class="text-center">
                 <div class="text-lg font-bold text-gray-800">
-                  {{ matiere.totalCours }}
+                  {{ matiere.nb_cours }}
                 </div>
                 <div class="text-xs text-gray-500">Cours</div>
               </div>

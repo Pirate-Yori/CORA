@@ -78,10 +78,10 @@ const pageTitle = computed(() => {
 
       <!-- Card principale -->
       <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
-        <div class="md:p-12">
-          <h2 class="text-2xl md:text-3xl font-bold text-center mb-8 text-gray-800">
+        <div class="md:p-10">
+          <!-- <h2 class="text-2xl md:text-3xl font-bold text-center mb-4 text-gray-800">
             {{ pageTitle }}
-          </h2>
+          </h2> -->
 
           <!-- Contenu de la page -->
           <div class="max-w-2xl mx-auto">
@@ -90,7 +90,7 @@ const pageTitle = computed(() => {
         </div>
 
         <!-- Footer avec bouton Home -->
-        <div class="bg-gray-50 px-8 py-6 border-t border-gray-100">
+        <div class="bg-gray-50 px-8 py-3 border-t border-gray-100">
           <RouterLink
             to="/home"
             class="flex items-center justify-center gap-2 text-gray-600 hover:text-blue-600 transition-colors duration-200 text-sm font-medium group"

@@ -11,16 +11,6 @@ const dashboardRoutes: RouteRecordRaw[] = [
         },
         children: [
             {
-                path: "home",
-                name: "Home",
-                component: () => import("@/views/home/DashboardView.vue"),
-                meta: {
-                    title: "Accueil",
-                    requiresAuth: false,
-                    redirectIfAuth: true
-                }
-            },
-            {
                 path: "dashboard",
                 name: "Dashboard",
                 component: () => import("@/views/Dashboard.vue"),
@@ -61,11 +51,11 @@ const dashboardRoutes: RouteRecordRaw[] = [
                             breadcrumb: (route: any) => [
                                 { label: "Tableau de bord", path: "/dashboard" },
                                 { label: 'Mes matières', path: '/matieres' },
-                                // {
-                                //     label: route.params?.matiereName
-                                //         || `Matière ${route.params?.matiereId ?? ""}`,
-                                //     path: route.path
-                                // }
+                                {
+                                    label: route.params?.matiereName
+                                        || `Matière ${route.params?.matiereId ?? ""}`,
+                                    path: route.path
+                                }
                             ]
                         },
                     },

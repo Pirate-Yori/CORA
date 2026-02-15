@@ -163,12 +163,12 @@ export function useChapitres() {
     /**
      * Charger les chapitres d'un cours
      */
-    const loadChapitres = async (matiereId: number, coursId: number) => {
+    const loadChapitres = async (coursId: number) => {
         localLoading.value = true;
         localError.value = null;
 
         try {
-            await store.fetchChapitresByCours(matiereId, coursId);
+            await store.fetchChapitresByCours(coursId);
         } catch (err: any) {
             localError.value = err.message || 'Erreur lors du chargement';
             throw err;

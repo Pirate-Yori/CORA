@@ -15,12 +15,13 @@ const props = defineProps<{ matiere: Matiere }>();
           matiere.colorBg,
         ]"
       >
-        <span class="text-2xl">{{ matiere.icon }}</span>
+        <!-- <span class="text-2xl">{{ matiere.icon }}</span> -->
+         <img :src="matiere.icon" alt="Icône" class="w-full h-full object-contain"/>
       </div>
       <span
         :class="[
           'px-3 py-1 rounded-full text-xs font-medium',
-          matiere.statusColor,
+          `bg-${matiere.statusColor}-500`,
         ]"
       >
         {{ matiere.status }}
@@ -30,9 +31,9 @@ const props = defineProps<{ matiere: Matiere }>();
     <h4
       class="text-lg font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors"
     >
-      {{ matiere.nom }}
+      {{ matiere.nom_matiere }}
     </h4>
-    <p class="text-sm text-gray-500 mb-4">{{ matiere.professeur }}</p>
+    <!-- <p class="text-sm text-gray-500 mb-4">{{ matiere.professeur }}</p> -->
 
     <!-- Barre de progression -->
     <div class="mb-3">
@@ -44,7 +45,7 @@ const props = defineProps<{ matiere: Matiere }>();
       </div>
       <div class="w-full bg-gray-200 rounded-full h-2">
         <div
-          :class="['h-2 rounded-full transition-all', matiere.progressColor]"
+          :class="['h-2 rounded-full transition-all', `bg-${matiere.progressColor}-500`]"
           :style="{ width: matiere.progression + '%' }"
         ></div>
       </div>

@@ -15,7 +15,7 @@ const routes: RouteRecordRaw[]=[
         }
     },
     ...authRoutes,
-    // ...homeRoutes,
+    ...homeRoutes,
     ...dashboardRoutes,
     //Route 404 - Page non trouvée
     {

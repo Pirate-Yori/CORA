@@ -8,7 +8,7 @@ const props = defineProps<{
   loading: boolean;
 }>();
 
-defineEmits(["open-matiere"]);
+defineEmits(["open-matiere","voir-tout"]);
 
 //computed
 const hasMatierers = computed(
@@ -20,7 +20,8 @@ const hasMatierers = computed(
   <div class="flex items-center justify-between mb-6">
     <h3 class="text-2xl font-bold text-gray-800">{{ titre }}</h3>
     <button
-      class="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
+    @click="$emit('voir-tout')"
+      class="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors cursor-pointer"
     >
       Voir tout
     </button>
@@ -40,7 +41,7 @@ const hasMatierers = computed(
       v-for="(matiere,index) in matieres"
       :key="index"
       :matiere="matiere"
-      @click="$emit('open-matiere', matiere)"
+      @click="$emit('open-matiere', matiere.id)"
     />
   </div>
 </template>

@@ -136,8 +136,8 @@ class Cours(models.Model):
     date_modification = models.DateTimeField(auto_now=True)
 
     # Foreign keys
-    matiere = models.ForeignKey(Matiere, on_delete=models.CASCADE, related_name="cours")
-    classe = models.ForeignKey(Classe, on_delete=models.CASCADE, related_name="cours")
+    matiere = models.ForeignKey('Matiere', on_delete=models.CASCADE, related_name="cours")
+    # classe = models.ForeignKey(Classe, on_delete=models.CASCADE, related_name="cours")
 
     class Meta:
         db_table = 'cours'
@@ -147,6 +147,10 @@ class Cours(models.Model):
 
     def __str__(self):
         return f"{self.titre} - {self.numero}"
+    
+    def get_classes(self):
+        """Retourne les classes via la matière"""
+        return self.matiere.classes_matieres.all()
 
 class Chapitre(models.Model):
     titre = models.CharField(max_length=255)
